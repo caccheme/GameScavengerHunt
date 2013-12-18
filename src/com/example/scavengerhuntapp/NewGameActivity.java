@@ -3,7 +3,6 @@ package com.example.scavengerhuntapp;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.net.ParseException;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,13 +17,8 @@ import com.parse.SaveCallback;
 
 public class NewGameActivity extends Activity {  
   private EditText userInput;
-  private EditText editStartDate;
-  private EditText editStarttime;
-  private EditText editEnddate;
-  private EditText editEndtime;
   private Button newGameButton;
   private Button cancelButton;
-  private EditText userInputStartDateTime;
   private EditText userInputStartDate;
   private EditText userInputStartTime;
   private EditText userInputEndDate;
@@ -60,29 +54,24 @@ public class NewGameActivity extends Activity {
           ScavengerHuntApplication.getInstance().showToast(NewGameActivity.this, "Game Created!");
           gameInfo.saveInBackground(
              new SaveCallback() {
-                public void done(final ParseException e) {
-                   if (e == null) {
-                      final String gameInfoId = gameInfo.getObjectId();
-                      Intent i = new Intent(NewGameActivity.this, GameItemsActivity.class);
-                      i.putExtra("gameInfoId", gameInfoId);
-                      NewGameActivity.this.startActivity(i);
-                   }
-                   else{
-                      Context context = getApplicationContext();
-                      CharSequence text = "Sorry, app has encountered a problem.";
-                      int duration = Toast.LENGTH_SHORT;
-                      Toast.makeText(context, text, duration).show();
-                      Log.d("ScavengerHuntApp", Log.getStackTraceString(e));
-                      finish();
-                      startActivity(getIntent());
-                    }
-                  }
-
                 @Override
                 public void done(com.parse.ParseException e) {
-                  // TODO Auto-generated method stub
-                  
+                 if (e == null) {
+                   final String gameInfoId = gameInfo.getObjectId();
+                   Intent i = new Intent(NewGameActivity.this, GameItemsActivity.class);
+                   i.putExtra("gameInfoId", gameInfoId);
+                   NewGameActivity.this.startActivity(i);
                 }
+                else{
+                   Context context = getApplicationContext();
+                   CharSequence text = "Sorry, app has encountered a problem.";
+                   int duration = Toast.LENGTH_SHORT;
+                   Toast.makeText(context, text, duration).show();
+                   Log.d("ScavengerHuntApp", Log.getStackTraceString(e));
+                   finish();
+                   startActivity(getIntent());
+                 }
+               }
                 }); 
         } 
     } );
