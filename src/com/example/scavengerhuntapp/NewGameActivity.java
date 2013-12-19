@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.parse.ParseObject;
+import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 
@@ -48,10 +49,12 @@ public class NewGameActivity extends Activity {
           final String gameEndDate = userInputEndDate.getText().toString().trim();
           final String gameEndTime = userInputEndTime.getText().toString().trim();
           
+          gameInfo.put("gameCreator", ParseUser.getCurrentUser());
           gameInfo.put("gameName", gameName);
           gameInfo.put("start_datetime", (gameStartDate + " " + gameStartTime));
           gameInfo.put("end_datetime", (gameEndDate + " " + gameEndTime));
           ScavengerHuntApplication.getInstance().showToast(NewGameActivity.this, "Game Created!");
+          
           gameInfo.saveInBackground(
              new SaveCallback() {
                 @Override

@@ -1,5 +1,6 @@
 package com.example.scavengerhuntapp;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,21 +24,21 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
-public class GameItemsActivity extends Activity {  
+public class GamePlayersActivity extends Activity {  
   private EditText userInput;
-  private Button addItemButton;
+  private Button addplayerButton;
   private Button doneButton;
   private Button cancelButton;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.gameitemsmanage);
-    listCurrentItems();
+    setContentView(R.layout.gameplayersmanage);
+    listCurrentplayers();
     setupButtonCallbacks();
   }
   
-  private void listCurrentItems(){
+  private void listCurrentplayers(){
     final ParseQuery<ParseObject> query = ParseQuery.getQuery("gameInfo");
     final Intent i = getIntent(); 
     final Context context = this;
@@ -45,19 +46,19 @@ public class GameItemsActivity extends Activity {
       @Override
       public void done(ParseObject gameInfo, ParseException e) {
         if (e == null) {
-          JSONArray items = gameInfo.getJSONArray("itemsList"); 
-          if (items != null) {        
-            //Now have to convert JSONArray 'items' to String Array 'itemsList' so that ArrayAdapter will accept it as argument
-            List<String> itemsList = new ArrayList<String>();
-            for(int i = 0; i < items.length(); i++){
+          JSONArray players = gameInfo.getJSONArray("playersList"); 
+          if (players != null) {        
+            //Now have to convert JSONArray 'players' to String Array 'playersList' so that ArrayAdapter will accept it as argument
+            List<String> playersList = new ArrayList<String>();
+            for(int i = 0; i < players.length(); i++){
               try{             
-                itemsList.add(items.getString(i));
+                playersList.add(players.getString(i));
               }
               catch (Exception exc) {
                 Log.d("ScavengerHuntApp", "JSONObject exception: " + Log.getStackTraceString(exc));
               }
             }
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, itemsList); 
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, playersList); 
             ListView listView = (ListView) findViewById(R.id.listView1);
             listView.setAdapter(adapter);  
           }
@@ -75,8 +76,8 @@ public class GameItemsActivity extends Activity {
   
   private void setupButtonCallbacks() {
     userInput = (EditText) findViewById(R.id.enterText);
-    addItemButton = (Button) findViewById(R.id.manageItemsButton_addItem);
-    addItemButton.setOnClickListener(new OnClickListener() {
+    addplayerButton = (Button) findViewById(R.id.manageplayersButton_addplayer);
+    addplayerButton.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
         final ParseQuery<ParseObject> query = ParseQuery.getQuery("gameInfo");
@@ -85,19 +86,19 @@ public class GameItemsActivity extends Activity {
           @Override
           public void done(ParseObject gameInfo, ParseException e) {
             if (e == null) {
-              final String new_item = userInput.getText().toString().trim(); 
-              JSONArray items = gameInfo.getJSONArray("itemsList"); 
-              if (items != null) {
-                items.put(new_item); 
-                gameInfo.put("itemsList", items);   
+              final String new_player = userInput.getText().toString().trim(); 
+              JSONArray players = gameInfo.getJSONArray("playersList"); 
+              if (players != null) {
+                players.put(new_player); 
+                gameInfo.put("playersList", players);   
                 gameInfo.saveInBackground();
                 finish();
                 startActivity(getIntent()); 
               }  
               else { 
-                JSONArray new_items = new JSONArray();
-                new_items.put(new_item);
-                gameInfo.put("itemsList", new_items);
+                JSONArray new_players = new JSONArray();
+                new_players.put(new_player);
+                gameInfo.put("playersList", new_players);
                 gameInfo.saveInBackground();
                 finish();
                 startActivity(getIntent());
@@ -105,7 +106,7 @@ public class GameItemsActivity extends Activity {
             }    
             else{
               Context context = getApplicationContext();
-              CharSequence text = "Sorry, item did not save. Please try again.";
+              CharSequence text = "Sorry, player did not save. Please try again.";
               int duration = Toast.LENGTH_SHORT;                     
               Toast.makeText(context, text, duration).show();
               Log.d("ScavengerHuntApp", "ParseObject retrieval error: " + Log.getStackTraceString(e));
@@ -116,7 +117,7 @@ public class GameItemsActivity extends Activity {
         });    
       } 
     }); 
-    doneButton = (Button) findViewById(R.id.manageItemsButton_done); 
+    doneButton = (Button) findViewById(R.id.manageplayersButton_done); 
     doneButton.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -125,20 +126,17 @@ public class GameItemsActivity extends Activity {
         int duration = Toast.LENGTH_SHORT;                     
         Toast.makeText(context, text, duration).show();
         finish();
-        final Intent i = getIntent();
-        final String gameInfoId = i.getStringExtra("gameInfoId");
-        Intent b = new Intent(GameItemsActivity.this, GamePlayersActivity.class);
-        b.putExtra("gameInfoId", gameInfoId);
-        GameItemsActivity.this.startActivity(b);
+        Intent i = new Intent(GamePlayersActivity.this, MainMenuActivity.class);
+        GamePlayersActivity.this.startActivity(i);
       } 
     });
-    cancelButton = (Button) findViewById(R.id.manageItemsButton_cancel); 
+    cancelButton = (Button) findViewById(R.id.manageplayersButton_cancel); 
     cancelButton.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
         finish();
-        Intent i = new Intent(GameItemsActivity.this, MainMenuActivity.class);
-        GameItemsActivity.this.startActivity(i);
+        Intent i = new Intent(GamePlayersActivity.this, GameItemsActivity.class);
+        GamePlayersActivity.this.startActivity(i);
       }
     });
   }    

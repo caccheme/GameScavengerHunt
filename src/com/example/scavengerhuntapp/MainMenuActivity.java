@@ -1,6 +1,7 @@
 package com.example.scavengerhuntapp;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -8,7 +9,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.content.Intent;
 
 import com.parse.ParseUser;
 
@@ -28,6 +28,7 @@ public class MainMenuActivity extends Activity {
     setupButtonCallbacks();
   }
 
+  @Override
   public void onResume() {
     super.onResume();
     currentUser = ParseUser.getCurrentUser();
@@ -39,6 +40,7 @@ public class MainMenuActivity extends Activity {
   private void setupButtonCallbacks() {
     newGameButton = (Button) findViewById(R.id.newGameButton_name);
     newGameButton.setOnClickListener(new OnClickListener() {
+      @Override
       public void onClick(View v) {
         // XXX open NewGameActivity
         // Intent i = new Intent(mThisActivity, NewGameActivity.class);
@@ -49,22 +51,21 @@ public class MainMenuActivity extends Activity {
 
     joinGameButton = (Button) findViewById(R.id.mainMenuButton_joinGame);
     joinGameButton.setOnClickListener(new OnClickListener() {
-      public void onClick(View v) {
-        // XXX open JoinGameActivity
-        // Intent i = new Intent(mThisActivity, JoinGameActivity.class);
-        // mThisActivity.startActivity(i);
-      }
+            @Override
+            public void onClick(View v) {
+                    // XXX open JoinGameActivity
+                    // Intent i = new Intent(mThisActivity, JoinGameActivity.class);
+                    // mThisActivity.startActivity(i);
+            }
     });
 
     myGamesButton = (Button) findViewById(R.id.mainMenuButton_myGames);
     myGamesButton.setOnClickListener(new OnClickListener() {
-      public void onClick(View v) {
-        // XXX open MyGamesActivity
-        // Intent i = new Intent(mThisActivity, MyGamesActivity.class);
-        // mThisActivity.startActivity(i);
-      }
+            @Override
+            public void onClick(View v) {
+              startActivity(new Intent(MainMenuActivity.this, MyGamesList.class));
+            }
     });
-
   }
 
   // /////////////////////////////////////////////////////
