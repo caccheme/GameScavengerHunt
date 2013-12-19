@@ -96,13 +96,6 @@ public class LoginActivity extends Activity {
           + getString(R.string.label_loginPleaseTryAgainMessage));
   }  
   
-  
-  
-  
-  
-  
-  
-  
   private final FindCallback<ParseUser> userFindCallback = new FindCallback<ParseUser>() {
     @Override
     public void done(List<ParseUser> arg0, ParseException arg1) {

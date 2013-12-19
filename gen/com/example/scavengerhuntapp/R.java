@@ -37,6 +37,7 @@ public final class R {
         public static final int label_startDatetime=0x7f080015;
         public static final int layout_newgamecreate=0x7f080012;
         public static final int listView1=0x7f080006;
+        public static final int listView_players=0x7f080009;
         public static final int listview_myGames=0x7f080000;
         public static final int loginbutton_cancel=0x7f08000e;
         public static final int loginbutton_continue=0x7f08000d;
@@ -45,7 +46,6 @@ public final class R {
         public static final int manageItemsButton_addItem=0x7f080004;
         public static final int manageItemsButton_cancel=0x7f080003;
         public static final int manageItemsButton_done=0x7f080002;
-        public static final int manageplayersButton_addplayer=0x7f080009;
         public static final int manageplayersButton_cancel=0x7f080008;
         public static final int manageplayersButton_done=0x7f080007;
         public static final int menuitem_logout=0x7f08001f;
