@@ -5,40 +5,36 @@ import java.util.Arrays;
 import java.util.List;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
-public class GamePlayersActivity extends Activity {  
-  private Button doneButton;
-  private Button cancelButton;
+public class GamePlayersActivity extends Activity {
   private List<ParseUser> playerList = new ArrayList<ParseUser>();
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.gameplayersmanage);
-    setupListViews();
+    setCurrentUserList();
     setupButtonCallbacks();
   }
-    
-  private void setupListViews() {
-    setParseUserList();
-  }
-  
-  private void setParseUserList() {
+     
+  private void setCurrentUserList() {
     final ParseQuery<ParseUser> query = ParseUser.getQuery();
     query.selectKeys(Arrays.asList("username"));
     query.findInBackground(new FindCallback<ParseUser>() {
@@ -52,13 +48,10 @@ public class GamePlayersActivity extends Activity {
                             + userList.get(i).getString("username"));
                     usernameList[i] = userList.get(i).getString("username");
                 }
-                //will write method later to take playerList and capture the selected players for the specific game
-                //right now playerList is a placeholder only and isn't called yet
                 playerList = userList;
                 setUsernameListView(usernameList);
             } else {
                 Log.w("error", "game retreival failure");
-                /* setGameInfo(game); */
             }
         }
     });
@@ -71,35 +64,80 @@ public class GamePlayersActivity extends Activity {
     playerListView.setAdapter(adapter);
     playerListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
   }
-  
-//buttons don't save anything at this point, need to pass info first, this slice was only to get list set up in view with 
-  //checkboxes....next slice will be methods to pass info around
-   private void setupButtonCallbacks() {
-    //my guess thinking about players list with checkboxes
-    // selectplayerCheckbox = (Checkbox) findViewById(R.id.manageplayersCheckbox_addplayer)   
-     
-    doneButton = (Button) findViewById(R.id.manageplayersButton_done); 
-    doneButton.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        Context context = getApplicationContext();
-        CharSequence text = "New Game Saved";
-        int duration = Toast.LENGTH_SHORT;                     
-        Toast.makeText(context, text, duration).show();
-        finish();
-        Intent i = new Intent(GamePlayersActivity.this, MainMenuActivity.class);
-        GamePlayersActivity.this.startActivity(i);
-      } 
-    });
-    cancelButton = (Button) findViewById(R.id.manageplayersButton_cancel); 
-    cancelButton.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        finish();
-        Intent i = new Intent(GamePlayersActivity.this, GameItemsActivity.class);
-        GamePlayersActivity.this.startActivity(i);
-      }
-    });
-  }    
    
+   private void setupButtonCallbacks() {
+     final Button finishCreateGameButton = (Button) findViewById(R.id.manageplayersButton_done);
+     finishCreateGameButton.setOnClickListener(new OnClickListener() {
+         @Override
+         public void onClick(View v) {
+           final ParseQuery<ParseObject> query = ParseQuery.getQuery("gameInfo");          
+           Intent b = new Intent();
+           query.getInBackground(b.getStringExtra("gameInfo"), new GetCallback<ParseObject>() {   
+                    
+             @Override
+               public void done(ParseObject gameInfo, ParseException e) {
+                 if (e == null) {
+                   Log.d("Game Creation", "Game Created!");
+                   saveGamePlayers(getSelectedPlayerList());
+                   Intent i = new Intent(GamePlayersActivity.this, MainMenuActivity.class);
+                   GamePlayersActivity.this.startActivity(i);
+                   finish();
+
+                 } else {
+                   Log.d("Game Creation", "Error creating game: " + e);
+                 }
+               }
+           });
+         }
+     });
+     final Button cancelButton = (Button) findViewById(R.id.manageplayersButton_cancel);
+     cancelButton.setOnClickListener(new OnClickListener() {
+       @Override
+       public void onClick(View v) {
+         finish();
+         Intent i = new Intent(GamePlayersActivity.this, GameItemsActivity.class);
+         GamePlayersActivity.this.startActivity(i);
+       }
+     });
+   }
+
+  private List<ParseUser> getSelectedPlayerList() {
+     final List<ParseUser> chosenPlayers = new ArrayList<ParseUser>();
+     final ListView playerListView = (ListView) findViewById(R.id.listView_players);
+     SparseBooleanArray checkedItems = playerListView
+             .getCheckedItemPositions();
+     if (checkedItems != null) {
+         for (int i = 0; i < checkedItems.size(); i++) {
+             if (checkedItems.valueAt(i)) {
+                 chosenPlayers.add(playerList.get(checkedItems.keyAt(i)));
+             }
+         }
+     }
+     return chosenPlayers;
+   }
+
+   private void saveGamePlayers(List<ParseUser> chosenPlayerList) {  
+     for (int i = 0; i < chosenPlayerList.size(); i++) {     
+         final ParseUser user = chosenPlayerList.get(i);
+         Log.d("Player", user.toString());
+         final Intent intent = getIntent();
+         //gameInfoId = intent.getStringExtra("gameInfo").id;
+         
+         final ParseObject gamePlayer = new ParseObject("GamePlayer");
+         gamePlayer.put("userId", user);
+         gamePlayer.put("gameId", intent.getStringExtra("gameInfoId"));
+         gamePlayer.saveInBackground(new SaveCallback() {
+             @Override
+             public void done(ParseException e) {
+                 if (e == null) {
+                     Log.d("Save", "gamePlayer data saved!");
+                 } else {
+                     Log.d("Save", "Error saving gamePlayer: " + e);
+                 }
+             }
+
+         });
+     }
+  }
+
 }

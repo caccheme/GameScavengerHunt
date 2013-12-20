@@ -15,7 +15,6 @@ import com.parse.ParseObject;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
-
 public class NewGameActivity extends Activity {  
   private EditText userInput;
   private Button newGameButton;
@@ -53,7 +52,6 @@ public class NewGameActivity extends Activity {
           gameInfo.put("gameName", gameName);
           gameInfo.put("start_datetime", (gameStartDate + " " + gameStartTime));
           gameInfo.put("end_datetime", (gameEndDate + " " + gameEndTime));
-          ScavengerHuntApplication.getInstance().showToast(NewGameActivity.this, "Game Created!");
           
           gameInfo.saveInBackground(
              new SaveCallback() {
