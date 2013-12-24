@@ -24,15 +24,11 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
 public class GameItemsActivity extends Activity {  
-  private EditText userInput;
-  private Button addItemButton;
-  private Button doneButton;
-  private Button cancelButton;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.gameitemsmanage);
+    setContentView(R.layout.gameitems);
     listCurrentItems();
     setupButtonCallbacks();
   }
@@ -47,8 +43,7 @@ public class GameItemsActivity extends Activity {
         if (e == null) {
           JSONArray items = gameInfo.getJSONArray("itemsList"); 
           if (items != null) {        
-            //Now have to convert JSONArray 'items' to String Array 'itemsList' so that ArrayAdapter will accept it as argument
-            List<String> itemsList = new ArrayList<String>();
+            final List<String> itemsList = new ArrayList<String>();
             for(int i = 0; i < items.length(); i++){
               try{             
                 itemsList.add(items.getString(i));
@@ -63,7 +58,7 @@ public class GameItemsActivity extends Activity {
           }
         }
         else {
-          CharSequence text = "Sorry, there was a problem. Just a sec.";
+          CharSequence text = "There was a problem. Please hold.";
           int duration = Toast.LENGTH_SHORT;                     
           Toast.makeText(context, text, duration).show();
           finish();
@@ -74,8 +69,8 @@ public class GameItemsActivity extends Activity {
   }
   
   private void setupButtonCallbacks() {
-    userInput = (EditText) findViewById(R.id.enterText);
-    addItemButton = (Button) findViewById(R.id.manageItemsButton_addItem);
+    final EditText userInput = (EditText) findViewById(R.id.enterText);
+    final Button addItemButton = (Button) findViewById(R.id.manageItemsButton_addItem);
     addItemButton.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -105,7 +100,7 @@ public class GameItemsActivity extends Activity {
             }    
             else{
               Context context = getApplicationContext();
-              CharSequence text = "Sorry, item did not save. Please try again.";
+              CharSequence text = "Item didn't save, try again.";
               int duration = Toast.LENGTH_SHORT;                     
               Toast.makeText(context, text, duration).show();
               Log.d("ScavengerHuntApp", "ParseObject retrieval error: " + Log.getStackTraceString(e));
@@ -116,14 +111,10 @@ public class GameItemsActivity extends Activity {
         });    
       } 
     }); 
-    doneButton = (Button) findViewById(R.id.manageItemsButton_done); 
+    final Button doneButton = (Button) findViewById(R.id.manageItemsButton_done); 
     doneButton.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        Context context = getApplicationContext();
-        CharSequence text = "New Game Saved";
-        int duration = Toast.LENGTH_SHORT;                     
-        Toast.makeText(context, text, duration).show();
         finish();
         final Intent i = getIntent();
         final String gameInfoId = i.getStringExtra("gameInfoId");
@@ -132,7 +123,7 @@ public class GameItemsActivity extends Activity {
         GameItemsActivity.this.startActivity(b);
       } 
     });
-    cancelButton = (Button) findViewById(R.id.manageItemsButton_cancel); 
+    final Button cancelButton = (Button) findViewById(R.id.manageItemsButton_cancel); 
     cancelButton.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {

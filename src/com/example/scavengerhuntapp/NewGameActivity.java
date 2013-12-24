@@ -16,13 +16,6 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 public class NewGameActivity extends Activity {  
-  private EditText userInput;
-  private Button newGameButton;
-  private Button cancelButton;
-  private EditText userInputStartDate;
-  private EditText userInputStartTime;
-  private EditText userInputEndDate;
-  private EditText userInputEndTime;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -32,12 +25,12 @@ public class NewGameActivity extends Activity {
   }
 
   private void setupButtonCallbacks() {
-    userInput = (EditText) findViewById(R.id.edit_gameName);
-    userInputStartDate = (EditText) findViewById(R.id.editStartDate);
-    userInputStartTime = (EditText) findViewById(R.id.editStartTime);
-    userInputEndDate = (EditText) findViewById(R.id.editEndDate);
-    userInputEndTime = (EditText) findViewById(R.id.editEndTime);    
-    newGameButton = (Button) findViewById(R.id.newGameButton_continue);  
+    final EditText userInput = (EditText) findViewById(R.id.edit_gameName);
+    final EditText userInputStartDate = (EditText) findViewById(R.id.editStartDate);
+    final EditText userInputStartTime = (EditText) findViewById(R.id.editStartTime);
+    final EditText userInputEndDate = (EditText) findViewById(R.id.editEndDate);
+    final EditText userInputEndTime = (EditText) findViewById(R.id.editEndTime);    
+    Button newGameButton = (Button) findViewById(R.id.newGameButton_continue);  
     newGameButton.setOnClickListener(new OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -59,14 +52,14 @@ public class NewGameActivity extends Activity {
                 public void done(com.parse.ParseException e) {
                  if (e == null) {
                    final String gameInfoId = gameInfo.getObjectId();
-                   Intent i = new Intent(NewGameActivity.this, GameItemsActivity.class);
+                   final Intent i = new Intent(NewGameActivity.this, GameItemsActivity.class);
                    i.putExtra("gameInfoId", gameInfoId);
                    NewGameActivity.this.startActivity(i);
                 }
                 else{
                    Context context = getApplicationContext();
                    CharSequence text = "Sorry, app has encountered a problem.";
-                   int duration = Toast.LENGTH_SHORT;
+                   final int duration = Toast.LENGTH_SHORT;
                    Toast.makeText(context, text, duration).show();
                    Log.d("ScavengerHuntApp", Log.getStackTraceString(e));
                    finish();
@@ -76,7 +69,7 @@ public class NewGameActivity extends Activity {
                 }); 
         } 
     } );
-    cancelButton = (Button) findViewById(R.id.newGameButton_cancel); 
+    final Button cancelButton = (Button) findViewById(R.id.newGameButton_cancel); 
     cancelButton.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
