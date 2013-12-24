@@ -30,6 +30,7 @@
         <activity android:name="NewGameActivity" android:label="NewGame"></activity>
         <activity android:name="GameItemsActivity" android:label="GameItems"></activity>
         <activity android:name="GamePlayersActivity" android:label="GamePlayers"></activity>
+        <activity android:name="MyGamesList" android:label="MyGames"></activity>
     </application>
 
 </manifest>

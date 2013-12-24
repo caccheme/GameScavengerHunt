@@ -76,4 +76,6 @@
     <string name="label_addplayer">Add Player label</string>
     <string name="header_playerlist">Player List</string>
     
+    <string name="header_mygameslist">My Games</string>
+    <string name="mygameslistButton_done">Done</string>
 </resources>

@@ -11,16 +11,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        android:text="@string/header_itemlist"
+        android:text="@string/header_mygameslist"
         android:textSize="18.0sp"
         android:textStyle="bold" />
 
     <Button
-        android:id="@+id/manageItemsButton_done"
+        android:id="@+id/manageplayersButton_done"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/manageItemsButton_cancel"
-        android:layout_alignBottom="@+id/manageItemsButton_cancel"
+        android:layout_alignBaseline="@+id/manageplayersButton_cancel"
+        android:layout_alignBottom="@+id/manageplayersButton_cancel"
         android:layout_alignParentRight="true"
         android:gravity="center"
         android:text="@string/label_done"
@@ -28,7 +28,7 @@
         android:textStyle="normal" />
 
     <Button
-        android:id="@+id/manageItemsButton_cancel"
+        android:id="@+id/manageplayersButton_cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -38,35 +38,14 @@
         android:textSize="16sp"
         android:textStyle="normal" />
 
-    <Button
-        android:id="@+id/manageItemsButton_addItem"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/manageItemsButton_done"
-        android:layout_alignParentLeft="true"
-        android:gravity="center"
-        android:text="@string/label_additem"
-        android:textSize="16sp"
-        android:textStyle="normal" />
-
-    <EditText
-        android:id="@+id/enterText"
+    <ListView
+        android:id="@+id/listview_myGames"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/manageItemsButton_addItem"
-        android:layout_alignParentLeft="true"
-        android:layout_marginBottom="15dp"
-        android:ems="10"
-        android:hint="@string/hint_additem"
-        android:imeOptions="actionDone"
-        android:inputType="text" />
-
-    <ListView
-        android:id="@+id/listView1"
-        android:layout_width="275dp"
-        android:layout_height="204dp"
+        android:layout_above="@+id/manageplayersButton_done"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/myGamesList_textView" >
+
     </ListView>
     
 </RelativeLayout>
