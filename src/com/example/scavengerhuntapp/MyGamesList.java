@@ -76,7 +76,7 @@ public class MyGamesList extends Activity {
                 if (e == null) {
                     for (final ParseObject gameInfo : games) {
                         Log.d("Game Info",
-                                "Game name is " + gameInfo.getString("name"));
+                                "Game name is " + gameInfo.getString("gameName"));
                         addToListView(gameInfo, getMyGamesAdapter());
                     }
                     myGames = games;
