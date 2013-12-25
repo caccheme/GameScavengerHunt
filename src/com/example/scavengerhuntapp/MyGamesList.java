@@ -50,7 +50,6 @@ public class MyGamesList extends Activity {
                             final View view, int position, long id) {
                         final ParseObject gameInfo = myGames.get(position);
                         launchGameView(gameInfo.getObjectId());
-
                     }
                 });
     }
