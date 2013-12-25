@@ -8,8 +8,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.parse.FindCallback;
@@ -28,6 +30,7 @@ public class MyGamesList extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mygameslist_layout);
         setMyGamesListView();
+        setupButtonCallbacks();
     }
 
     @Override
@@ -91,5 +94,17 @@ public class MyGamesList extends Activity {
         final ArrayAdapter<String> adapter = (ArrayAdapter<String>) myGamesListView
                 .getAdapter();
         return adapter;
+    }
+    
+    private void setupButtonCallbacks() {
+      final Button menuButton = (Button) findViewById(R.id.mygameslistButton_menu); 
+      menuButton.setOnClickListener(new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+          finish();
+          Intent i = new Intent(MyGamesList.this, MainMenuActivity.class);
+          MyGamesList.this.startActivity(i);
+        }
+      });
     }
 }

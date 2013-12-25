@@ -77,5 +77,6 @@
     <string name="header_playerlist">Player List</string>
     
     <string name="header_mygameslist">My Games</string>
-    <string name="mygameslistButton_done">Done</string>
+    <string name="mygameslistButton_menu">Back to Menu</string>
+    <string name="label_menu">Back to Menu</string>
 </resources>
