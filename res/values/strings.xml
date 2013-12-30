@@ -69,7 +69,7 @@
       <!-- Game List -->
     <string name="label_itemList">Item List</string>
     <string name="button_edit">Edit</string>
-    <string name="label_currentGamePlayers">Current Game Players</string>
+    <string name="label_currentGamePlayers">Players</string>
     <string name="button_back">Back</string>
     <string name="header_gamelist">Game List</string>
     <string name="hint_addplayer">Add Player hint</string>
@@ -79,4 +79,12 @@
     <string name="header_mygameslist">My Games</string>
     <string name="mygameslistButton_menu">Back to Menu</string>
     <string name="label_menu">Back to Menu</string>
+ 
+    <!-- Edit Game -->
+    <string name="label_gamePlayerList">Player List:</string>
+    <string name="button_save">Save</string>
+    <string name= "editgamebutton_edititems">Edit Items</string>
+    <string name="editgamebutton_editplayers">Edit Players</string>
+    <string name="label_editgamenametime">Save Changes</string>
+   
 </resources>

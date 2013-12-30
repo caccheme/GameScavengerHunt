@@ -11,7 +11,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,7 +36,7 @@ public class ViewGame extends Activity {
         final String gameId = extras.getString("gameId");
         getGame();
         setContentView(R.layout.viewgame_layout);
-//        setupButtonCallbacks(gameId);
+        setupButtonCallbacks(gameId);
     }
 
     @Override
@@ -42,18 +45,18 @@ public class ViewGame extends Activity {
         return true;
     }
 
-//    private void setupButtonCallbacks(final String gameId) {
-//        final Button editGameButton = (Button) findViewById(R.id.button_editGame);
-//        editGameButton.setOnClickListener(new OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//              Intent intent = new Intent(ViewGame.this, EditGame.class);
-//              intent.putExtra("gameId", gameId);
-//              Log.d("gameId", "game id is " + gameId);
-//              startActivity(intent);
-//            }
-//        });
-//    }
+    private void setupButtonCallbacks(final String gameId) {
+        final Button editGameButton = (Button) findViewById(R.id.button_editGame);
+        editGameButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+              Intent intent = new Intent(ViewGame.this, EditGameNameTime.class);
+              intent.putExtra("gameId", gameId);
+              Log.d("gameId", "game id is " + gameId);
+              startActivity(intent);
+            }
+        });
+    }
 
     private void setItemList(ParseObject game) {
       final ParseQuery<ParseObject> query = ParseQuery.getQuery("game");

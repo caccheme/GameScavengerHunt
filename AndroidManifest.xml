@@ -32,6 +32,7 @@
         <activity android:name="GamePlayersActivity" android:label="GamePlayers"></activity>
         <activity android:name="MyGamesList" android:label="MyGames"></activity>
         <activity android:name="ViewGame" android:label="ViewGame"></activity>
+        <activity android:name="EditGameNameTime" android:label="EditGame"></activity>
     </application>
 
 </manifest>
