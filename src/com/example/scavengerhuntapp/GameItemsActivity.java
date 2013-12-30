@@ -34,14 +34,14 @@ public class GameItemsActivity extends Activity {
   }
   
   private void listCurrentItems(){
-    final ParseQuery<ParseObject> query = ParseQuery.getQuery("gameInfo");
+    final ParseQuery<ParseObject> query = ParseQuery.getQuery("game");
     final Intent i = getIntent(); 
     final Context context = this;
-    query.getInBackground(i.getStringExtra("gameInfoId"), new GetCallback<ParseObject>() {
+    query.getInBackground(i.getStringExtra("gameId"), new GetCallback<ParseObject>() {
       @Override
-      public void done(ParseObject gameInfo, ParseException e) {
+      public void done(ParseObject game, ParseException e) {
         if (e == null) {
-          JSONArray items = gameInfo.getJSONArray("itemsList"); 
+          JSONArray items = game.getJSONArray("itemsList"); 
           if (items != null) {        
             final List<String> itemsList = new ArrayList<String>();
             for(int i = 0; i < items.length(); i++){
@@ -74,26 +74,26 @@ public class GameItemsActivity extends Activity {
     addItemButton.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        final ParseQuery<ParseObject> query = ParseQuery.getQuery("gameInfo");
+        final ParseQuery<ParseObject> query = ParseQuery.getQuery("game");
         final Intent i = getIntent();    
-        query.getInBackground(i.getStringExtra("gameInfoId"), new GetCallback<ParseObject>() {
+        query.getInBackground(i.getStringExtra("gameId"), new GetCallback<ParseObject>() {
           @Override
-          public void done(ParseObject gameInfo, ParseException e) {
+          public void done(ParseObject game, ParseException e) {
             if (e == null) {
               final String new_item = userInput.getText().toString().trim(); 
-              JSONArray items = gameInfo.getJSONArray("itemsList"); 
+              JSONArray items = game.getJSONArray("itemsList"); 
               if (items != null) {
                 items.put(new_item); 
-                gameInfo.put("itemsList", items);   
-                gameInfo.saveInBackground();
+                game.put("itemsList", items);   
+                game.saveInBackground();
                 finish();
                 startActivity(getIntent()); 
               }  
               else { 
                 JSONArray new_items = new JSONArray();
                 new_items.put(new_item);
-                gameInfo.put("itemsList", new_items);
-                gameInfo.saveInBackground();
+                game.put("itemsList", new_items);
+                game.saveInBackground();
                 finish();
                 startActivity(getIntent());
              }
@@ -117,9 +117,9 @@ public class GameItemsActivity extends Activity {
       public void onClick(View v) {
         finish();
         final Intent i = getIntent();
-        final String gameInfoId = i.getStringExtra("gameInfoId");
+        final String gameId = i.getStringExtra("gameId");
         Intent b = new Intent(GameItemsActivity.this, GamePlayersActivity.class);
-        b.putExtra("gameInfoId", gameInfoId);
+        b.putExtra("gameId", gameId);
         GameItemsActivity.this.startActivity(b);
       } 
     });

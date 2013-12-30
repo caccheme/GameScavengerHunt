@@ -34,26 +34,26 @@ public class NewGameActivity extends Activity {
     newGameButton.setOnClickListener(new OnClickListener() {
         @Override
         public void onClick(View v) {
-          final ParseObject gameInfo = new ParseObject("gameInfo");
+          final ParseObject game = new ParseObject("game");
           final String gameName = userInput.getText().toString().trim();          
           final String gameStartDate = userInputStartDate.getText().toString().trim();
           final String gameStartTime = userInputStartTime.getText().toString().trim();
           final String gameEndDate = userInputEndDate.getText().toString().trim();
           final String gameEndTime = userInputEndTime.getText().toString().trim();
           
-          gameInfo.put("gameCreator", ParseUser.getCurrentUser());
-          gameInfo.put("gameName", gameName);
-          gameInfo.put("start_datetime", (gameStartDate + " " + gameStartTime));
-          gameInfo.put("end_datetime", (gameEndDate + " " + gameEndTime));
+          game.put("gameCreator", ParseUser.getCurrentUser());
+          game.put("gameName", gameName);
+          game.put("start_datetime", (gameStartDate + " " + gameStartTime));
+          game.put("end_datetime", (gameEndDate + " " + gameEndTime));
           
-          gameInfo.saveInBackground(
+          game.saveInBackground(
              new SaveCallback() {
                 @Override
                 public void done(com.parse.ParseException e) {
                  if (e == null) {
-                   final String gameInfoId = gameInfo.getObjectId();
+                   final String gameId = game.getObjectId();
                    final Intent i = new Intent(NewGameActivity.this, GameItemsActivity.class);
-                   i.putExtra("gameInfoId", gameInfoId);
+                   i.putExtra("gameId", gameId);
                    NewGameActivity.this.startActivity(i);
                 }
                 else{

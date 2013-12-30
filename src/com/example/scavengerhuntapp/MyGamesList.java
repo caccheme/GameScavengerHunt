@@ -51,35 +51,35 @@ public class MyGamesList extends Activity {
                     @Override
                     public void onItemClick(AdapterView<?> parent,
                             final View view, int position, long id) {
-                        final ParseObject gameInfo = myGames.get(position);
-                        launchGameView(gameInfo.getObjectId());
+                        final ParseObject game = myGames.get(position);
+                        launchGameView(game.getObjectId());
                     }
                 });
     }
 
-    private void launchGameView(String gameInfoId) {
+    private void launchGameView(String gameId) {
         Intent intent = new Intent(MyGamesList.this, ViewGame.class);
-        intent.putExtra("gameInfoId", gameInfoId);
-        Log.d("GameInfoId", "game id is " + gameInfoId);
+        intent.putExtra("gameId", gameId);
+        Log.d("gameId", "game id is " + gameId);
         startActivity(intent);
     }
 
-    private void addToListView(ParseObject gameInfo, ArrayAdapter<String> adapter) {
-        adapter.add(gameInfo.getString("gameName"));
+    private void addToListView(ParseObject game, ArrayAdapter<String> adapter) {
+        adapter.add(game.getString("gameName"));
         adapter.notifyDataSetChanged();
     }
 
     private void findMyCreatedGames() {
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("gameInfo");
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("game");
         query.whereEqualTo("gameCreator", currentUser);
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> games, ParseException e) {
                 if (e == null) {
-                    for (final ParseObject gameInfo : games) {
+                    for (final ParseObject game : games) {
                         Log.d("Game Info",
-                                "Game name is " + gameInfo.getString("gameName"));
-                        addToListView(gameInfo, getMyGamesAdapter());
+                                "Game name is " + game.getString("gameName"));
+                        addToListView(game, getMyGamesAdapter());
                     }
                     myGames = games;
                 } else {

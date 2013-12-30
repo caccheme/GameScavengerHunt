@@ -26,6 +26,7 @@ import com.parse.SaveCallback;
 public class GamePlayersActivity extends Activity {
   private List<ParseUser> playerList = new ArrayList<ParseUser>();
 
+  
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -33,7 +34,7 @@ public class GamePlayersActivity extends Activity {
     setCurrentUserList();
     setupButtonCallbacks();
   }
-     
+ 
   private void setCurrentUserList() {
     final ParseQuery<ParseUser> query = ParseUser.getQuery();
     query.selectKeys(Arrays.asList("username"));
@@ -56,7 +57,7 @@ public class GamePlayersActivity extends Activity {
         }
     });
   }
-
+ 
   private void setUsernameListView(String[] usernameList) {
     final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
             android.R.layout.simple_list_item_multiple_choice, usernameList);
@@ -70,12 +71,12 @@ public class GamePlayersActivity extends Activity {
      finishCreateGameButton.setOnClickListener(new OnClickListener() {
          @Override
          public void onClick(View v) {
-           final ParseQuery<ParseObject> query = ParseQuery.getQuery("gameInfo");          
+           final ParseQuery<ParseObject> query = ParseQuery.getQuery("game");          
            Intent b = new Intent();
-           query.getInBackground(b.getStringExtra("gameInfo"), new GetCallback<ParseObject>() {   
+           query.getInBackground(b.getStringExtra("game"), new GetCallback<ParseObject>() {   
                     
              @Override
-               public void done(ParseObject gameInfo, ParseException e) {
+               public void done(ParseObject game, ParseException e) {
                  if (e == null) {
                    Log.d("Game Creation", "Game Created!");
                    saveGamePlayers(getSelectedPlayerList());
@@ -121,11 +122,10 @@ public class GamePlayersActivity extends Activity {
          final ParseUser user = chosenPlayerList.get(i);
          Log.d("Player", user.toString());
          final Intent intent = getIntent();
-         //gameInfoId = intent.getStringExtra("gameInfo").id;
          
-         final ParseObject gamePlayer = new ParseObject("GamePlayer");
+         final ParseObject gamePlayer = new ParseObject("gamePlayer");
          gamePlayer.put("userId", user);
-         gamePlayer.put("gameId", intent.getStringExtra("gameInfoId"));
+         gamePlayer.put("gameId", intent.getStringExtra("gameId"));
          gamePlayer.saveInBackground(new SaveCallback() {
              @Override
              public void done(ParseException e) {
