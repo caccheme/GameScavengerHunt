@@ -38,12 +38,6 @@ public class ViewGame extends Activity {
         setupButtonCallbacks(gameId);
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.viewgame_menu, menu);
-//        return true;
-//    }
-
     private void setupButtonCallbacks(final String gameId) {
         final Button editGameButton = (Button) findViewById(R.id.button_editGame);
         editGameButton.setOnClickListener(new OnClickListener() {
@@ -112,7 +106,6 @@ public class ViewGame extends Activity {
 
                     gameName.setText(game.getString("gameName"));                    
                     gameName.setOnClickListener(new OnClickListener() {
-
                             @Override
                             public void onClick(View v) {
                               Bundle extras = getIntent().getExtras();
@@ -122,7 +115,25 @@ public class ViewGame extends Activity {
                         });               
                 
                     startDatetime.setText(game.getString("start_datetime"));
+                    startDatetime.setOnClickListener(new OnClickListener() {
+                      @Override
+                      public void onClick(View v) {
+                        Bundle extras = getIntent().getExtras();
+                        String gameId = extras.getString("gameId");
+                        launchEditGameNameTimeView(gameId);
+                      }
+                    });               
+     
                     endDatetime.setText(game.getString("end_datetime"));
+                    endDatetime.setOnClickListener(new OnClickListener() {
+                      @Override
+                      public void onClick(View v) {
+                        Bundle extras = getIntent().getExtras();
+                        String gameId = extras.getString("gameId");
+                        launchEditGameNameTimeView(gameId);
+                      }
+                    });               
+                  
                     setItemList(game);                  
                     setPlayerList();
                     
