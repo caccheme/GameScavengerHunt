@@ -130,4 +130,5 @@
         android:layout_toRightOf="@+id/Editgame_editplayers"
         android:text="@string/editgamebutton_edititems" />
 
+
 </RelativeLayout>

@@ -10,7 +10,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
@@ -39,11 +38,11 @@ public class ViewGame extends Activity {
         setupButtonCallbacks(gameId);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.viewgame_menu, menu);
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.viewgame_menu, menu);
+//        return true;
+//    }
 
     private void setupButtonCallbacks(final String gameId) {
         final Button editGameButton = (Button) findViewById(R.id.button_editGame);
@@ -111,7 +110,17 @@ public class ViewGame extends Activity {
                     TextView startDatetime = (TextView) findViewById(R.id.text_startDatetime);
                     TextView endDatetime = (TextView) findViewById(R.id.text_endDatetime);
 
-                    gameName.setText(game.getString("gameName"));
+                    gameName.setText(game.getString("gameName"));                    
+                    gameName.setOnClickListener(new OnClickListener() {
+
+                            @Override
+                            public void onClick(View v) {
+                              Bundle extras = getIntent().getExtras();
+                              String gameId = extras.getString("gameId");
+                              launchEditGameNameTimeView(gameId);
+                            }
+                        });               
+                
                     startDatetime.setText(game.getString("start_datetime"));
                     endDatetime.setText(game.getString("end_datetime"));
                     setItemList(game);                  
@@ -123,7 +132,16 @@ public class ViewGame extends Activity {
             }
         });
     }
-   
+
+    private void launchEditGameNameTimeView(String gameId) {
+      Intent intent = new Intent(ViewGame.this, EditGameNameTime.class);
+      intent.putExtra("gameId", gameId);
+      Log.d("gameId", "game id is " + gameId);
+      startActivity(intent);
+   }
+
+      
+    
   private void setPlayerList() {
       ParseQuery<ParseObject> query = ParseQuery.getQuery("gamePlayer");
       Bundle extras = getIntent().getExtras();
