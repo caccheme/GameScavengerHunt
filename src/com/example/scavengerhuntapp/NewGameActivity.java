@@ -23,7 +23,7 @@ public class NewGameActivity extends Activity {
     setContentView(R.layout.newgamecreate);
     setupButtonCallbacks();
   }
-
+// This is to commit a change and check that everything is set up with github
   private void setupButtonCallbacks() {
     final EditText userInput = (EditText) findViewById(R.id.edit_gameName);
     final EditText userInputStartDate = (EditText) findViewById(R.id.editStartDate);
