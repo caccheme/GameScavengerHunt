@@ -34,10 +34,10 @@ public class GameItemsActivity extends Activity {
   }
   
   private void listCurrentItems(){
-    final ParseQuery<ParseObject> query = ParseQuery.getQuery("game");
+    final ParseQuery<ParseObject> query = ParseQuery.getQuery("Game");
     final Intent i = getIntent(); 
     final Context context = this;
-    query.getInBackground(i.getStringExtra("gameId"), new GetCallback<ParseObject>() {
+    query.getInBackground(i.getStringExtra("GameId"), new GetCallback<ParseObject>() {
       @Override
       public void done(ParseObject game, ParseException e) {
         if (e == null) {
@@ -74,9 +74,9 @@ public class GameItemsActivity extends Activity {
     addItemButton.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        final ParseQuery<ParseObject> query = ParseQuery.getQuery("game");
+        final ParseQuery<ParseObject> query = ParseQuery.getQuery("Game");
         final Intent i = getIntent();    
-        query.getInBackground(i.getStringExtra("gameId"), new GetCallback<ParseObject>() {
+        query.getInBackground(i.getStringExtra("GameId"), new GetCallback<ParseObject>() {
           @Override
           public void done(ParseObject game, ParseException e) {
             if (e == null) {
@@ -117,9 +117,9 @@ public class GameItemsActivity extends Activity {
       public void onClick(View v) {
         finish();
         final Intent i = getIntent();
-        final String gameId = i.getStringExtra("gameId");
+        final String GameId = i.getStringExtra("GameId");
         Intent b = new Intent(GameItemsActivity.this, GamePlayersActivity.class);
-        b.putExtra("gameId", gameId);
+        b.putExtra("GameId", GameId);
         GameItemsActivity.this.startActivity(b);
       } 
     });

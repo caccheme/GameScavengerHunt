@@ -32,30 +32,32 @@ public class ViewGame extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle extras = getIntent().getExtras();
-        final String gameId = extras.getString("gameId");
+        final String GameId = extras.getString("GameId");
         getGame();
         setContentView(R.layout.viewgame_layout);
-        setupButtonCallbacks(gameId);
+        setupButtonCallbacks(GameId);
     }
 
-    private void setupButtonCallbacks(final String gameId) {
+    private void setupButtonCallbacks(final String GameId) {
         final Button editGameButton = (Button) findViewById(R.id.button_editGame);
         editGameButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
               Intent intent = new Intent(ViewGame.this, EditGameNameTime.class);
-              intent.putExtra("gameId", gameId);
-              Log.d("gameId", "game id is " + gameId);
+              intent.putExtra("GameId", GameId);
+              Log.d("GameId", "Game id is " + GameId);
               startActivity(intent);
             }
         });
+//        add in buttons to take user to different options for editing
+        
     }
 
     private void setItemList(ParseObject game) {
-      final ParseQuery<ParseObject> query = ParseQuery.getQuery("game");
+      final ParseQuery<ParseObject> query = ParseQuery.getQuery("Game");
       final Intent i = getIntent(); 
       final Context context = this;
-      query.getInBackground(i.getStringExtra("gameId"), new GetCallback<ParseObject>() {
+      query.getInBackground(i.getStringExtra("GameId"), new GetCallback<ParseObject>() {
         @Override
         public void done(ParseObject game, ParseException e) {
           if (e == null) {
@@ -86,17 +88,19 @@ public class ViewGame extends Activity {
       });  
     }
 
+
+    
     private void getGame() {
         Bundle extras = getIntent().getExtras();
-        String gameId = extras.getString("gameId");
-        Log.d("Game Info", "Game View ID is " + gameId);
+        String GameId = extras.getString("GameId");
+        Log.d("Game Info", "Game View ID is " + GameId);
 
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("game");
-        query.getInBackground(gameId, new GetCallback<ParseObject>() {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Game");
+        query.getInBackground(GameId, new GetCallback<ParseObject>() {
             @Override
             public void done(ParseObject game, ParseException e) {
                 if (e == null) {
-                    Log.d("Game Info", "Game name is " + game.getString("gameName"));
+                    Log.d("Game Info", "Game name is " + game.getString("name"));
 
                     setupUsernameListView();
                     
@@ -104,33 +108,39 @@ public class ViewGame extends Activity {
                     TextView startDatetime = (TextView) findViewById(R.id.text_startDatetime);
                     TextView endDatetime = (TextView) findViewById(R.id.text_endDatetime);
 
-                    gameName.setText(game.getString("gameName"));                    
+                    gameName.setText(game.getString("name"));
+                    startDatetime.setText(game.getDate("start_datetime").toString());
+                    endDatetime.setText(game.getDate("end_datetime").toString());
+                    setItemList(game);
+                    
+                    gameName.setText(game.getString("name"));                    
                     gameName.setOnClickListener(new OnClickListener() {
                             @Override
                             public void onClick(View v) {
                               Bundle extras = getIntent().getExtras();
-                              String gameId = extras.getString("gameId");
-                              launchEditGameNameTimeView(gameId);
+                              String GameId = extras.getString("GameId");
+                              launchEditGame(GameId);
                             }
                         });               
                 
-                    startDatetime.setText(game.getString("start_datetime"));
+                    
+                    startDatetime.setText(game.getDate("start_datetime").toString());
                     startDatetime.setOnClickListener(new OnClickListener() {
                       @Override
                       public void onClick(View v) {
                         Bundle extras = getIntent().getExtras();
-                        String gameId = extras.getString("gameId");
-                        launchEditGameNameTimeView(gameId);
+                        String GameId = extras.getString("GameId");
+                        launchEditGame(GameId);
                       }
                     });               
      
-                    endDatetime.setText(game.getString("end_datetime"));
+                    endDatetime.setText(game.getDate("end_datetime").toString());
                     endDatetime.setOnClickListener(new OnClickListener() {
                       @Override
                       public void onClick(View v) {
                         Bundle extras = getIntent().getExtras();
-                        String gameId = extras.getString("gameId");
-                        launchEditGameNameTimeView(gameId);
+                        String GameId = extras.getString("GameId");
+                        launchEditGame(GameId);
                       }
                     });               
                   
@@ -144,20 +154,20 @@ public class ViewGame extends Activity {
         });
     }
 
-    private void launchEditGameNameTimeView(String gameId) {
+    private void launchEditGame(String GameId) {
       Intent intent = new Intent(ViewGame.this, EditGameNameTime.class);
-      intent.putExtra("gameId", gameId);
-      Log.d("gameId", "game id is " + gameId);
+      intent.putExtra("GameId", GameId);
+      Log.d("GameId", "Game id is " + GameId);
       startActivity(intent);
    }
 
       
     
   private void setPlayerList() {
-      ParseQuery<ParseObject> query = ParseQuery.getQuery("gamePlayer");
+      ParseQuery<ParseObject> query = ParseQuery.getQuery("GamePlayer");
       Bundle extras = getIntent().getExtras();
-      final String gameId = extras.getString("gameId");
-      query.whereEqualTo("gameId", gameId);
+      final String GameId = extras.getString("GameId");
+      query.whereEqualTo("GameId", GameId);
       query.findInBackground(new FindCallback<ParseObject>() {
           @Override
           public void done(List<ParseObject> playerList, ParseException e) {

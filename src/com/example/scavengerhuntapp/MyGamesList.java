@@ -50,34 +50,34 @@ public class MyGamesList extends Activity {
                     @Override
                     public void onItemClick(AdapterView<?> parent,
                             final View view, int position, long id) {
-                        final ParseObject game = myGames.get(position);
-                        launchGameView(game.getObjectId());
+                        final ParseObject Game = myGames.get(position);
+                        launchGameView(Game.getObjectId());
                     }
                 });
     }
 
-    private void launchGameView(String gameId) {
+    private void launchGameView(String GameId) {
         Intent intent = new Intent(MyGamesList.this, ViewGame.class);
-        intent.putExtra("gameId", gameId);
-        Log.d("gameId", "game id is " + gameId);
+        intent.putExtra("GameId", GameId);
+        Log.d("GameId", "Game id is " + GameId);
         startActivity(intent);
     }
 
     private void addToListView(ParseObject game, ArrayAdapter<String> adapter) {
-        adapter.add(game.getString("gameName"));
+        adapter.add(game.getString("name"));
         adapter.notifyDataSetChanged();
     }
 
     private void findMyCreatedGames() {
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("game");
-        query.whereEqualTo("gameCreator", currentUser);
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Game");
+        query.whereEqualTo("creator", currentUser);
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> games, ParseException e) {
                 if (e == null) {
                     for (final ParseObject game : games) {
                         Log.d("Game Info",
-                                "Game name is " + game.getString("gameName"));
+                                "Game name is " + game.getString("name"));
                         addToListView(game, getMyGamesAdapter());
                     }
                     myGames = games;

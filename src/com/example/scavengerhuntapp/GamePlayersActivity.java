@@ -71,19 +71,21 @@ public class GamePlayersActivity extends Activity {
      finishCreateGameButton.setOnClickListener(new OnClickListener() {
          @Override
          public void onClick(View v) {
-           final ParseQuery<ParseObject> query = ParseQuery.getQuery("game");          
+           final ParseQuery<ParseObject> query = ParseQuery.getQuery("Game");          
            Intent b = new Intent();
-           query.getInBackground(b.getStringExtra("game"), new GetCallback<ParseObject>() {   
+           query.getInBackground(b.getStringExtra("Game"), new GetCallback<ParseObject>() {   
                     
              @Override
                public void done(ParseObject game, ParseException e) {
                  if (e == null) {
                    Log.d("Game Creation", "Game Created!");
                    saveGamePlayers(getSelectedPlayerList());
-                   Intent i = new Intent(GamePlayersActivity.this, MainMenuActivity.class);
+                   final String GameId = game.getObjectId();
+                   final Intent i = new Intent(GamePlayersActivity.this, ViewGame.class);
+                   i.putExtra("GameId", GameId);
                    GamePlayersActivity.this.startActivity(i);
                    finish();
-
+            
                  } else {
                    Log.d("Game Creation", "Error creating game: " + e);
                  }
@@ -123,9 +125,9 @@ public class GamePlayersActivity extends Activity {
          Log.d("Player", user.toString());
          final Intent intent = getIntent();
          
-         final ParseObject gamePlayer = new ParseObject("gamePlayer");
+         final ParseObject gamePlayer = new ParseObject("GamePlayer");
          gamePlayer.put("userId", user);
-         gamePlayer.put("gameId", intent.getStringExtra("gameId"));
+         gamePlayer.put("GameId", intent.getStringExtra("GameId"));
          gamePlayer.saveInBackground(new SaveCallback() {
              @Override
              public void done(ParseException e) {

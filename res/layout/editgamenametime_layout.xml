@@ -42,7 +42,8 @@
         android:layout_alignRight="@+id/editEndDate"
         android:layout_below="@+id/label_startDatetime"
         android:hint="@string/hint_startDate"
-        android:inputType="date"/>
+        android:inputType="date"
+        android:onClick="showStartDatePickerDialog"/>
 
     <TextView
         android:id="@+id/label_endDatetime"
@@ -62,7 +63,8 @@
         android:layout_below="@+id/label_endDatetime"
         android:layout_toLeftOf="@+id/editEndTime"
         android:hint="@string/hint_endDate"
-        android:inputType="date"/>
+        android:inputType="date"
+        android:onClick="showEndDatePickerDialog"/>
     
     <View
         android:id="@+id/view1"
@@ -79,7 +81,8 @@
         android:layout_below="@+id/label_startDatetime"
         android:ems="10"
         android:hint="@string/hint_startTime"
-        android:inputType="time"/>
+        android:inputType="time"
+        android:onClick="showStartTimePickerDialog"/>
 
     <EditText
         android:id="@+id/editEndTime"
@@ -89,7 +92,8 @@
         android:layout_below="@+id/label_endDatetime"
         android:ems="10"
         android:hint="@string/hint_endTime"
-        android:inputType="time" />
+        android:inputType="time" 
+        android:onClick="showEndTimePickerDialog"/>
 
     <Button
         android:id="@+id/newGameButton_cancel"
@@ -108,11 +112,11 @@
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/Editgame_additems"
         android:layout_alignBottom="@+id/Editgame_additems"
-        android:layout_alignLeft="@+id/newGameButton_continue"
+        android:layout_alignLeft="@+id/button_update"
         android:text="@string/editgamebutton_editplayers" />
 
     <Button
-        android:id="@+id/newGameButton_continue"
+        android:id="@+id/button_update"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
