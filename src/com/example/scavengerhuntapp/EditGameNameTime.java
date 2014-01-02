@@ -98,6 +98,7 @@ public class EditGameNameTime extends Activity {
                 doUpdateGame();
             }
         });
+        
 
 //        addItemButton.setOnClickListener(new OnClickListener() {
 //            public void onClick(View v) {

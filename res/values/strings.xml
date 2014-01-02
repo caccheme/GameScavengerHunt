@@ -87,5 +87,6 @@
     <string name="editgamebutton_editplayers">Edit Players</string>
     <string name="label_editgamenametime">Save Changes</string>
     <string name="button_addItem">Add Item</string>
+    <string name="button_mainmenu">Main Menu</string>
     <string name="hint_addItem">Type Item here</string>
 </resources>

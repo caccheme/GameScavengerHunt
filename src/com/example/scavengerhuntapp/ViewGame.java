@@ -49,7 +49,18 @@ public class ViewGame extends Activity {
               startActivity(intent);
             }
         });
-//        add in buttons to take user to different options for editing
+
+        final Button menuButton = (Button) findViewById(R.id.button_Back); 
+        menuButton.setOnClickListener(new OnClickListener() {
+          @Override
+          public void onClick(View v) {
+            finish();
+            Intent i = new Intent(ViewGame.this, MainMenuActivity.class);
+            ViewGame.this.startActivity(i);
+          }
+        });
+        
+//        add in buttons to take user to different options for editing?
         
     }
 
