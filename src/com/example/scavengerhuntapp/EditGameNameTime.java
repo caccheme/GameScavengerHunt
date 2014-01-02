@@ -76,7 +76,6 @@ public class EditGameNameTime extends Activity {
             EditGameNameTime.this.startActivity(b);
           } 
         });   
-        
     }
 
     private void doUpdateGame() {

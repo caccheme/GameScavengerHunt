@@ -37,27 +37,31 @@ public class EditGamePlayers extends Activity {
         getGame();
     }
 
+    public void setGameInfo(ParseObject game) {
+    	getGamePlayers(game);   
+        TextView gameName = (TextView) findViewById(R.id.text_gameName);
+        gameName.setText(game.getString("name"));
+    }
+
     private void setupButtonCallbacks() {
-        final Button saveGameButton = (Button) findViewById(R.id.button_save);
-        saveGameButton.setOnClickListener(new OnClickListener() {
+        final Button updateGameButton = (Button) findViewById(R.id.button_save);
+        updateGameButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 Bundle extras = getIntent().getExtras();
-                final String GameId = extras.getString("GameId");
+                final String gameId = extras.getString("GameId");
                 ParseQuery<ParseObject> query = ParseQuery.getQuery("Game");
-                query.getInBackground(GameId, new GetCallback<ParseObject>() {
+
+                query.getInBackground(gameId, new GetCallback<ParseObject>() {
                     public void done(final ParseObject game, ParseException e) {
                         if (e == null) {
-                          game.saveInBackground(new SaveCallback() {
-                             public void done(ParseException e) {
+                            game.saveInBackground(new SaveCallback() {
+                                public void done(ParseException e) {
                                     if (e == null) {
-                                    	updateGamePlayers(getChosenPlayerList(), game);
-                                    	Log.d("Game Update", "Game Updated!");
-                                        ScavengerHuntApplication.getInstance().showToast(EditGamePlayers.this, "Game Updated!");
-                                         Intent newintent = new Intent(EditGamePlayers.this, ViewGame.class);
-                                         newintent.putExtra("GameId", GameId);
-                                         Log.d("GameId", "Game id is " + GameId);
-                                         startActivity(newintent); 
-                                         
+                                        Log.d("Game Update", "Game Updated!");
+                                        updateGamePlayers(getChosenPlayerList(), game);
+                                        ScavengerHuntApplication.getInstance()
+                                        .showToast(EditGamePlayers.this, "Game Updated!");
+                                         launchGameView(game.getObjectId());
                                     } else {
                                         Log.d("Game Creation", "Error creating game: "
                                                 + e);
@@ -71,17 +75,27 @@ public class EditGamePlayers extends Activity {
         });
     }
 
-    private void updateGamePlayers(List<ParseUser> chosenPlayerList, ParseObject game) {    
-    	for (ParseObject item : gamePlayers) {
-            item.deleteInBackground(); }
+    private void launchGameView(String gameId) {
+        Intent intent = new Intent(EditGamePlayers.this, ViewGame.class);
+        intent.putExtra("GameId", gameId);
+        Log.d("GameId", "game id is " + gameId);
+        startActivity(intent);
+    }
+    
+    private void clearParseObjects(List<ParseObject> parseList) {
+        for (ParseObject item : parseList) {
+            item.deleteInBackground();
+        }
+    }
 
+    private void updateGamePlayers(List<ParseUser> chosenPlayerList, ParseObject game) {
+        clearParseObjects(gamePlayers);
         for (int i = 0; i < chosenPlayerList.size(); i++) {
             ParseUser user = chosenPlayerList.get(i);
             Log.d("Player", user.toString());
-            final Intent intent = getIntent();
             ParseObject gamePlayer = new ParseObject("GamePlayer");
             gamePlayer.put("user", user);
-            gamePlayer.put("game", intent.getStringExtra("GameId"));
+            gamePlayer.put("game", game.getObjectId());
             gamePlayer.saveInBackground(new SaveCallback() {
                 public void done(ParseException e) {
                     if (e == null) {
@@ -109,15 +123,14 @@ public class EditGamePlayers extends Activity {
         }
         return chosenPlayers;
     }
-   
-    private void getGamePlayers() {
+
+    private void getGamePlayers(ParseObject game) {
         ParseQuery<ParseObject> query = ParseQuery.getQuery("GamePlayer");
         Bundle extras = getIntent().getExtras();
-        final String GameId = extras.getString("GameId");
-        query.whereEqualTo("GameId", GameId);
+        String gameId = extras.getString("GameId");
+        query.whereEqualTo("game", gameId);
         query.findInBackground(new FindCallback<ParseObject>() {
-            @Override   
-        	public void done(List<ParseObject> playerList, ParseException e) {
+            public void done(List<ParseObject> playerList, ParseException e) {
                 if (e == null) {
                     Log.d("User List", "Retrieved " + playerList.size()
                             + " player(s)");
@@ -133,7 +146,7 @@ public class EditGamePlayers extends Activity {
     private void getPlayers(List<ParseObject> playerList) {
         final ArrayList<ParseUser> players = new ArrayList<ParseUser>();
         for (int i = 0; i < playerList.size(); i++) {
-            playerList.get(i).getParseObject("userId")
+            playerList.get(i).getParseObject("user")
                     .fetchIfNeededInBackground(new GetCallback<ParseUser>() {
                         public void done(ParseUser user, ParseException e) {
                             if (e == null) {
@@ -149,7 +162,7 @@ public class EditGamePlayers extends Activity {
         }
         setParseUserList(players);
     }
-    
+
     private void setParseUserList(final ArrayList<ParseUser> gamePlayerList) {
         ParseQuery<ParseUser> query = ParseUser.getQuery();
         query.selectKeys(Arrays.asList("username"));
@@ -214,14 +227,10 @@ public class EditGamePlayers extends Activity {
             public void done(ParseObject game, ParseException e) {
                 if (e == null) {
                     Log.d("Game Info", "Game name is " + game.getString("name"));
-                    getGamePlayers();
-
-                    TextView gameName = (TextView) findViewById(R.id.text_gameName);
-                    gameName.setText(game.getString("name"));
-
+                    setGameInfo(game);
                 } else {
                     Log.w("error", "game retreival failure");
-                    getGamePlayers();
+                    setGameInfo(game);
                 }
             }
         });
