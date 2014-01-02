@@ -80,11 +80,9 @@ public class GamePlayersActivity extends Activity {
                  if (e == null) {
                    Log.d("Game Creation", "Game Created!");
                    saveGamePlayers(getSelectedPlayerList());
-                   final String GameId = game.getObjectId();
-                   final Intent i = new Intent(GamePlayersActivity.this, ViewGame.class);
-                   i.putExtra("GameId", GameId);
-                   GamePlayersActivity.this.startActivity(i);
                    finish();
+                   Intent i = new Intent(GamePlayersActivity.this, MyGamesList.class);
+                   GamePlayersActivity.this.startActivity(i);
             
                  } else {
                    Log.d("Game Creation", "Error creating game: " + e);
@@ -126,8 +124,8 @@ public class GamePlayersActivity extends Activity {
          final Intent intent = getIntent();
          
          final ParseObject gamePlayer = new ParseObject("GamePlayer");
-         gamePlayer.put("userId", user);
-         gamePlayer.put("GameId", intent.getStringExtra("GameId"));
+         gamePlayer.put("user", user);
+         gamePlayer.put("game", intent.getStringExtra("GameId"));
          gamePlayer.saveInBackground(new SaveCallback() {
              @Override
              public void done(ParseException e) {

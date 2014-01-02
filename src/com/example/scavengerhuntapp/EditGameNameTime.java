@@ -64,6 +64,19 @@ public class EditGameNameTime extends Activity {
                 doUpdateGame();
             }
         });
+        final Button editplayersButton = (Button) findViewById(R.id.button_editplayers); 
+        editplayersButton.setOnClickListener(new OnClickListener() {
+          @Override
+          public void onClick(View v) {
+            finish();
+            final Intent i = getIntent();
+            final String GameId = i.getStringExtra("GameId");
+            Intent b = new Intent(EditGameNameTime.this, EditGamePlayers.class);
+            b.putExtra("GameId", GameId);
+            EditGameNameTime.this.startActivity(b);
+          } 
+        });   
+        
     }
 
     private void doUpdateGame() {
@@ -80,10 +93,7 @@ public class EditGameNameTime extends Activity {
                         public void done(ParseException e) {
                             if (e == null) {
                                 Log.d("Game Update", "Game Updated!");
-//                                updateGamePlayers(getChosenPlayerList(), game);
-//                                updateGameItems(getItemList(), game);
                                  showToast("Game Updated!");
-                                 launchGameView(game.getObjectId());
                             } else {
                                 Log.d("Game Creation", "Error creating game: "
                                         + e);
@@ -94,13 +104,6 @@ public class EditGameNameTime extends Activity {
             }
         });
     }
-
-    private void launchGameView(String gameId) {
-        Intent intent = new Intent(EditGameNameTime.this, ViewGame.class);
-        intent.putExtra("gameId", gameId);
-        Log.d("GameId", "game id is " + gameId);
-        startActivity(intent);
-    }    
 
     private void showToast(String message) {
         ScavengerHuntApplication.getInstance()

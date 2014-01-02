@@ -89,4 +89,5 @@
     <string name="button_addItem">Add Item</string>
     <string name="button_mainmenu">Main Menu</string>
     <string name="hint_addItem">Type Item here</string>
+    <string name="button_edititems">Edit Items</string>
 </resources>

@@ -26,14 +26,16 @@
        <!-- Login activity is started when the StartActivity is done with
         Parse.com initialization -->
         <activity android:name="LoginActivity" android:label="Login"></activity>
-        <activity android:name="MainMenuActivity" android:label="MainMenu"></activity>
-        <activity android:name="NewGameActivity" android:label="NewGame"></activity>
-        <activity android:name="GameItemsActivity" android:label="GameItems"></activity>
-        <activity android:name="GamePlayersActivity" android:label="GamePlayers"></activity>
-        <activity android:name="MyGamesList" android:label="MyGames"></activity>
-        <activity android:name="ViewGame" android:label="ViewGame"></activity>
-        <activity android:name="EditGame" android:label="EditGame"></activity>
-        <activity android:name="EditGameNameTime" android:label="EditGameNameTime"></activity>
+        <activity android:name="MainMenuActivity" android:label="Main Menu"></activity>
+        <activity android:name="NewGameActivity" android:label="New Game"></activity>
+        <activity android:name="GameItemsActivity" android:label="Game Items"></activity>
+        <activity android:name="GamePlayersActivity" android:label="Game Players"></activity>
+        <activity android:name="MyGamesList" android:label="My Games"></activity>
+        <activity android:name="ViewGame" android:label="View Game"></activity>
+        <activity android:name="EditGame" android:label="Edit Game"></activity>
+        <activity android:name="EditGameNameTime" android:label="Edit Game"></activity>
+        <activity android:name="EditGamePlayers" android:label="Edit Game Players"></activity>
+        
     </application>
 
 </manifest>

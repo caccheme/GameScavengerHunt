@@ -26,8 +26,8 @@ public class ItemAddDialogFragment extends DialogFragment {
                             @Override
                             public void onClick(DialogInterface dialog, int id) {
                                 if (getTag() == "editGameItems") {
-                                    ((EditGame) getActivity()).onFinishItemDialog(mEditText
-                                            .getText().toString());
+//                                    ((EditGame) getActivity()).onFinishItemDialog(mEditText
+//                                            .getText().toString());
                                 }
                                 else if (getTag() == "createGameItems") {
 //                                    ((NewGameActivity) getActivity()).onFinishItemDialog(mEditText

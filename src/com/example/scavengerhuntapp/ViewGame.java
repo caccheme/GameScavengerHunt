@@ -50,7 +50,7 @@ public class ViewGame extends Activity {
             }
         });
 
-        final Button menuButton = (Button) findViewById(R.id.button_Back); 
+        final Button menuButton = (Button) findViewById(R.id.button_Back);
         menuButton.setOnClickListener(new OnClickListener() {
           @Override
           public void onClick(View v) {
@@ -60,43 +60,43 @@ public class ViewGame extends Activity {
           }
         });
         
-//        add in buttons to take user to different options for editing?
+// add in buttons to take user to different options for editing?
         
     }
 
     private void setItemList(ParseObject game) {
       final ParseQuery<ParseObject> query = ParseQuery.getQuery("Game");
-      final Intent i = getIntent(); 
+      final Intent i = getIntent();
       final Context context = this;
       query.getInBackground(i.getStringExtra("GameId"), new GetCallback<ParseObject>() {
         @Override
         public void done(ParseObject game, ParseException e) {
           if (e == null) {
-            JSONArray items = game.getJSONArray("itemsList"); 
-            if (items != null) {        
+            JSONArray items = game.getJSONArray("itemsList");
+            if (items != null) {
               final List<String> itemsList = new ArrayList<String>();
               for(int i = 0; i < items.length(); i++){
-                try{             
+                try{
                   itemsList.add(items.getString(i));
                 }
                 catch (Exception exc) {
                   Log.d("ScavengerHuntApp", "JSONObject exception: " + Log.getStackTraceString(exc));
                 }
               }
-              ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, itemsList); 
+              ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, itemsList);
               ListView listView = (ListView) findViewById(R.id.listview_gameItems);
-              listView.setAdapter(adapter);  
+              listView.setAdapter(adapter);
             }
           }
           else {
             CharSequence text = "There was a problem. Please hold.";
-            int duration = Toast.LENGTH_SHORT;                     
+            int duration = Toast.LENGTH_SHORT;
             Toast.makeText(context, text, duration).show();
             finish();
-            startActivity(getIntent()); 
+            startActivity(getIntent());
           }
         }
-      });  
+      });
     }
 
 
@@ -124,7 +124,7 @@ public class ViewGame extends Activity {
                     endDatetime.setText(game.getDate("end_datetime").toString());
                     setItemList(game);
                     
-                    gameName.setText(game.getString("name"));                    
+                    gameName.setText(game.getString("name"));
                     gameName.setOnClickListener(new OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -132,7 +132,7 @@ public class ViewGame extends Activity {
                               String GameId = extras.getString("GameId");
                               launchEditGame(GameId);
                             }
-                        });               
+                        });
                 
                     
                     startDatetime.setText(game.getDate("start_datetime").toString());
@@ -143,7 +143,7 @@ public class ViewGame extends Activity {
                         String GameId = extras.getString("GameId");
                         launchEditGame(GameId);
                       }
-                    });               
+                    });
      
                     endDatetime.setText(game.getDate("end_datetime").toString());
                     endDatetime.setOnClickListener(new OnClickListener() {
@@ -153,9 +153,9 @@ public class ViewGame extends Activity {
                         String GameId = extras.getString("GameId");
                         launchEditGame(GameId);
                       }
-                    });               
+                    });
                   
-                    setItemList(game);                  
+                    setItemList(game);
                     setPlayerList();
                     
                 } else {
@@ -178,7 +178,7 @@ public class ViewGame extends Activity {
       ParseQuery<ParseObject> query = ParseQuery.getQuery("GamePlayer");
       Bundle extras = getIntent().getExtras();
       final String GameId = extras.getString("GameId");
-      query.whereEqualTo("GameId", GameId);
+      query.whereEqualTo("game", GameId);
       query.findInBackground(new FindCallback<ParseObject>() {
           @Override
           public void done(List<ParseObject> playerList, ParseException e) {
@@ -195,7 +195,7 @@ public class ViewGame extends Activity {
     
   private void getUsernameList(List<ParseObject> playerList) {
       for (int i = 0; i < playerList.size(); i++) {
-        playerList.get(i).getParseObject("userId").fetchIfNeededInBackground(new GetCallback<ParseUser>() {
+        playerList.get(i).getParseObject("user").fetchIfNeededInBackground(new GetCallback<ParseUser>() {
                       @Override
                       public void done(ParseUser User, ParseException e) {
                           if (e == null) {

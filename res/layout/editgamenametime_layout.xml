@@ -107,11 +107,11 @@
         android:textStyle="normal" />
 
     <Button
-        android:id="@+id/Editgame_editplayers"
+        android:id="@+id/button_editplayers"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/Editgame_additems"
-        android:layout_alignBottom="@+id/Editgame_additems"
+        android:layout_alignBaseline="@+id/button_additems"
+        android:layout_alignBottom="@+id/button_additems"
         android:layout_alignLeft="@+id/button_update"
         android:text="@string/editgamebutton_editplayers" />
 
@@ -127,11 +127,11 @@
         android:textStyle="normal" />
 
     <Button
-        android:id="@+id/Editgame_additems"
+        android:id="@+id/button_additems"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/newGameButton_cancel"
-        android:layout_toRightOf="@+id/Editgame_editplayers"
+        android:layout_toRightOf="@+id/button_editplayers"
         android:text="@string/editgamebutton_edititems" />
 
 
