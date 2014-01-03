@@ -42,15 +42,15 @@ public class GamePlayersActivity extends Activity {
         @Override
         public void done(List<ParseUser> userList, ParseException e) {
             if (e == null) {
-                final String[] usernameList = new String[userList.size()];
+                final String[] usernameArray = new String[userList.size()];
                 Log.d("User List", "Retrieved " + userList.size());
                 for (int i = 0; i < userList.size(); i++) {
                     Log.d("data", "Retrieved User: "
                             + userList.get(i).getString("username"));
-                    usernameList[i] = userList.get(i).getString("username");
+                    usernameArray[i] = userList.get(i).getString("username");
                 }
                 playerList = userList;
-                setUsernameListView(usernameList);
+                setUsernameListView(usernameArray);
             } else {
                 Log.w("error", "game retreival failure");
             }
@@ -58,9 +58,9 @@ public class GamePlayersActivity extends Activity {
     });
   }
  
-  private void setUsernameListView(String[] usernameList) {
+  private void setUsernameListView(String[] usernameArray) {
     final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-            android.R.layout.simple_list_item_multiple_choice, usernameList);
+            android.R.layout.simple_list_item_multiple_choice, usernameArray);
     final ListView playerListView = (ListView) findViewById(R.id.listView_players);
     playerListView.setAdapter(adapter);
     playerListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);

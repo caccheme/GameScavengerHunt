@@ -78,10 +78,10 @@ public class GameItemsActivity extends Activity {
         final Intent i = getIntent();    
         query.getInBackground(i.getStringExtra("GameId"), new GetCallback<ParseObject>() {
           @Override
-          public void done(ParseObject game, ParseException e) {
+          final public void done(ParseObject game, ParseException e) {
             if (e == null) {
               final String new_item = userInput.getText().toString().trim(); 
-              JSONArray items = game.getJSONArray("itemsList"); 
+              final JSONArray items = game.getJSONArray("itemsList"); 
               if (items != null) {
                 items.put(new_item); 
                 game.put("itemsList", items);   
@@ -90,7 +90,7 @@ public class GameItemsActivity extends Activity {
                 startActivity(getIntent()); 
               }  
               else { 
-                JSONArray new_items = new JSONArray();
+                final JSONArray new_items = new JSONArray();
                 new_items.put(new_item);
                 game.put("itemsList", new_items);
                 game.saveInBackground();
@@ -101,7 +101,7 @@ public class GameItemsActivity extends Activity {
             else{
               Context context = getApplicationContext();
               CharSequence text = "Item didn't save, try again.";
-              int duration = Toast.LENGTH_SHORT;                     
+              final int duration = Toast.LENGTH_SHORT;                     
               Toast.makeText(context, text, duration).show();
               Log.d("ScavengerHuntApp", "ParseObject retrieval error: " + Log.getStackTraceString(e));
               finish();
