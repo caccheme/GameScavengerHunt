@@ -30,10 +30,6 @@ public class EditGameNameTime extends Activity {
         setupButtonCallbacks();
         getGame();
     }
-
-    public void onResume() {
-        super.onResume();
-    }
     
     private void getGame() {
         Bundle extras = getIntent().getExtras();
@@ -76,6 +72,19 @@ public class EditGameNameTime extends Activity {
             EditGameNameTime.this.startActivity(b);
           } 
         });   
+        final Button edititemsButton = (Button) findViewById(R.id.button_edititems); 
+        edititemsButton.setOnClickListener(new OnClickListener() {
+          @Override
+          public void onClick(View v) {
+            finish();
+            final Intent i = getIntent();
+            final String GameId = i.getStringExtra("GameId");
+            Intent b = new Intent(EditGameNameTime.this, EditGameItems.class);
+            b.putExtra("GameId", GameId);
+            EditGameNameTime.this.startActivity(b);
+          } 
+        });   
+
     }
 
     private void doUpdateGame() {
