@@ -9,6 +9,10 @@
         android:targetSdkVersion="17" />
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    
     <application
         android:name=".ScavengerHuntApplication"
         android:allowBackup="true"
@@ -36,6 +40,15 @@
         <activity android:name="EditGameNameTime" android:label="Edit Game"></activity>
         <activity android:name="EditGamePlayers" android:label="Edit Game Players"></activity>
         <activity android:name="EditGameItems" android:label="Edit Items"></activity>
-    </application>
+
+        <service android:name="com.parse.PushService" />
+        <receiver android:name="com.parse.ParseBroadcastReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.USER_PRESENT" />
+            </intent-filter>
+        </receiver>       
+        
+        </application>
 
 </manifest>

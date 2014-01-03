@@ -10,6 +10,11 @@ import com.parse.Parse;
 import com.parse.ParseACL;
 import com.parse.ParseUser;
 
+import com.parse.ParseInstallation;
+import com.parse.PushService;
+
+
+
 /**
  * Top level ScavengerHuntApplication declared as the application in the AndroidManifest.xml.
  * There is only one instance of this class created...by the android OS...upon
@@ -46,6 +51,9 @@ public class ScavengerHuntApplication extends Application {
 				Log.i(TAG, "Parse.initialize - done");
 				// add some delay, to show the splash screen
 				wait(START_WAIT_TIME);
+   		        PushService.setDefaultPushCallback(this, MainMenuActivity.class);
+			       ParseInstallation.getCurrentInstallation().saveInBackground();
+                   Log.i(TAG, "Parse.initialize - done");
 			}
 		} catch (Exception ex) {
 			Log.e(TAG + "." + "Exception in initializeParse", ex.getMessage());

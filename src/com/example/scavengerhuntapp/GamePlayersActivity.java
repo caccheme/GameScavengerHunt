@@ -22,17 +22,23 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+import com.parse.ParseInstallation;
+import com.parse.ParsePush;
+
 
 public class GamePlayersActivity extends Activity {
   private List<ParseUser> playerList = new ArrayList<ParseUser>();
-
+  final ParseObject game = new ParseObject("Game");
+  final ParseUser currentUser = ParseUser.getCurrentUser();
   
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.gameplayers);
     setCurrentUserList();
+    Log.d("Game Creation", "Game Created!");
     setupButtonCallbacks();
+    sendPushInvitation(game, currentUser);
   }
  
   private void setCurrentUserList() {
@@ -70,7 +76,7 @@ public class GamePlayersActivity extends Activity {
      final Button finishCreateGameButton = (Button) findViewById(R.id.manageplayersButton_done);
      finishCreateGameButton.setOnClickListener(new OnClickListener() {
          @Override
-         public void onClick(View v) {
+         public void onClick(View v) {	 
            final ParseQuery<ParseObject> query = ParseQuery.getQuery("Game");          
            Intent b = new Intent();
            query.getInBackground(b.getStringExtra("Game"), new GetCallback<ParseObject>() {   
@@ -117,14 +123,13 @@ public class GamePlayersActivity extends Activity {
      return chosenPlayers;
    }
 
-   private void saveGamePlayers(List<ParseUser> chosenPlayerList) {  
-     for (int i = 0; i < chosenPlayerList.size(); i++) {     
-         final ParseUser user = chosenPlayerList.get(i);
-         Log.d("Player", user.toString());
+   private void saveGamePlayers(List<ParseUser> selectedPlayerList) { 
+     for (ParseUser selectedPlayer : selectedPlayerList) {
+         Log.d("Player", selectedPlayer.toString());
          final Intent intent = getIntent();
          
          final ParseObject gamePlayer = new ParseObject("GamePlayer");
-         gamePlayer.put("user", user);
+         gamePlayer.put("user", selectedPlayer);
          gamePlayer.put("game", intent.getStringExtra("GameId"));
          gamePlayer.saveInBackground(new SaveCallback() {
              @Override
@@ -140,4 +145,20 @@ public class GamePlayersActivity extends Activity {
      }
   }
 
+   private void sendPushInvitation(ParseObject game, ParseUser currentUser) {
+	   for (ParseUser player : getSelectedPlayerList()) {
+       ParseQuery<ParseInstallation> pushQuery = ParseInstallation
+            .getQuery();
+               pushQuery.whereEqualTo("owner", player);
+               Log.d("push player", player.getString("username"));
+               ParsePush push = new ParsePush();
+               push.setQuery(pushQuery);
+               push.setMessage("You've been invited to play in the game "
+                       + game.getString("name") + " by "
+                       + currentUser.getString("username") + ".");               
+               push.sendInBackground();
+           }
+       }
+
+   
 }

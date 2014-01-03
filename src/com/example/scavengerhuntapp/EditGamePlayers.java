@@ -19,7 +19,9 @@ import android.widget.TextView;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
+import com.parse.ParseInstallation;
 import com.parse.ParseObject;
+import com.parse.ParsePush;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
@@ -47,10 +49,10 @@ public class EditGamePlayers extends Activity {
         final Button updateGameButton = (Button) findViewById(R.id.button_save);
         updateGameButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
-                Bundle extras = getIntent().getExtras();
+            	final ParseUser currentUser = ParseUser.getCurrentUser();
+            	Bundle extras = getIntent().getExtras();
                 final String gameId = extras.getString("GameId");
                 ParseQuery<ParseObject> query = ParseQuery.getQuery("Game");
-
                 query.getInBackground(gameId, new GetCallback<ParseObject>() {
                     public void done(final ParseObject game, ParseException e) {
                         if (e == null) {
@@ -59,6 +61,7 @@ public class EditGamePlayers extends Activity {
                                     if (e == null) {
                                         Log.d("Game Update", "Game Updated!");
                                         updateGamePlayers(getChosenPlayerList(), game);
+                                        sendPushInvitation(game, currentUser);
                                         ScavengerHuntApplication.getInstance()
                                         .showToast(EditGamePlayers.this, "Game Updated!");
                                          launchGameView(game.getObjectId());
@@ -235,5 +238,20 @@ public class EditGamePlayers extends Activity {
             }
         });
     }
+
+    private void sendPushInvitation(ParseObject game, ParseUser currentUser) {
+       for (ParseUser player : getChosenPlayerList()) {
+ 	            ParseQuery<ParseInstallation> pushQuery = ParseInstallation
+ 	                    .getQuery();
+  	            pushQuery.whereEqualTo("owner", player);
+  	            Log.d("push player", player.getString("username"));
+  	            ParsePush push = new ParsePush();
+  	            push.setQuery(pushQuery);
+  	            push.setMessage("You've been invited to play in the game "
+                      + game.getString("name") + " by "
+                      + currentUser.getString("username") + ".");               
+               push.sendInBackground();
+ 	        }
+ 	    }
 
 }
