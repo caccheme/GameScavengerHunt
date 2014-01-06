@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+
 import com.parse.ParseAnalytics;
 import com.parse.ParseUser;
 
@@ -43,10 +44,7 @@ public class MainMenuActivity extends Activity {
     newGameButton.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        // XXX open NewGameActivity
-        // Intent i = new Intent(mThisActivity, NewGameActivity.class);
-        Intent i = new Intent(MainMenuActivity.this, NewGameActivity.class);
-        MainMenuActivity.this.startActivity(i);
+          startActivity(new Intent(MainMenuActivity.this, NewGameActivity.class));
       }
     });
 
@@ -54,9 +52,7 @@ public class MainMenuActivity extends Activity {
     joinGameButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                    // XXX open JoinGameActivity
-                    // Intent i = new Intent(mThisActivity, JoinGameActivity.class);
-                    // mThisActivity.startActivity(i);
+                startActivity(new Intent(MainMenuActivity.this, CurrentGames.class));
             }
     });
 

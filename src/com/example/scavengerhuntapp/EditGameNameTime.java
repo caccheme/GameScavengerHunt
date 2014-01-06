@@ -64,24 +64,24 @@ public class EditGameNameTime extends Activity {
         editplayersButton.setOnClickListener(new OnClickListener() {
           @Override
           public void onClick(View v) {
-            finish();
             final Intent i = getIntent();
             final String GameId = i.getStringExtra("GameId");
             Intent b = new Intent(EditGameNameTime.this, EditGamePlayers.class);
             b.putExtra("GameId", GameId);
             EditGameNameTime.this.startActivity(b);
+            finish();
           } 
         });   
         final Button edititemsButton = (Button) findViewById(R.id.button_edititems); 
         edititemsButton.setOnClickListener(new OnClickListener() {
           @Override
           public void onClick(View v) {
-            finish();
             final Intent i = getIntent();
             final String GameId = i.getStringExtra("GameId");
             Intent b = new Intent(EditGameNameTime.this, EditGameItems.class);
             b.putExtra("GameId", GameId);
             EditGameNameTime.this.startActivity(b);
+            finish();
           } 
         });   
 
@@ -148,7 +148,13 @@ public class EditGameNameTime extends Activity {
         }
         return convertedDate;
     }
-
+    
+//    This is something that can be refactored much better. 
+//    There's one general task: parse and return the date in some user input. 
+//    Replace these two methods with just one getDateTime() method 
+//    that takes a view ID parameter. 
+//    Fix the calling code appropriately.
+    
     public void showStartDatePickerDialog(View v) {
         final DialogFragment newFragment = new DatePickerFragment();
         newFragment.show(getFragmentManager(), "startDatePicker");
@@ -169,6 +175,12 @@ public class EditGameNameTime extends Activity {
         newFragment.show(getFragmentManager(), "endTimePicker");
     }
 
+    
+//    Seems like you need just two methods not four here: 
+//    	one for showing date pickers, one for showing time pickers, 
+//    	with a parameter for the name of the picker.
+//    You pass a parameter in these methods but you don't use it.
+    
     private void populateDateTimeFields(ParseObject game) {
         EditText startDateView = (EditText) findViewById(R.id.editStartDate);
         EditText startTimeView = (EditText) findViewById(R.id.editStartTime);

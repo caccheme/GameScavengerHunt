@@ -86,10 +86,13 @@ public class GamePlayersActivity extends Activity {
                  if (e == null) {
                    Log.d("Game Creation", "Game Created!");
                    saveGamePlayers(getSelectedPlayerList());
-                   finish();
                    Intent i = new Intent(GamePlayersActivity.this, MyGamesList.class);
                    GamePlayersActivity.this.startActivity(i);
-            
+                   finish();
+//                   Can't you just write
+//                   startActivity(new Intent(this, ...));
+//                   I don't see why you need to write GamePlayersActivity or 
+//                   make a variable that's used just once.  do everywhere
                  } else {
                    Log.d("Game Creation", "Error creating game: " + e);
                  }
@@ -101,9 +104,9 @@ public class GamePlayersActivity extends Activity {
      cancelButton.setOnClickListener(new OnClickListener() {
        @Override
        public void onClick(View v) {
-         finish();
          Intent i = new Intent(GamePlayersActivity.this, GameItemsActivity.class);
          GamePlayersActivity.this.startActivity(i);
+         finish();
        }
      });
    }

@@ -40,7 +40,8 @@
         <activity android:name="EditGameNameTime" android:label="Edit Game"></activity>
         <activity android:name="EditGamePlayers" android:label="Edit Game Players"></activity>
         <activity android:name="EditGameItems" android:label="Edit Items"></activity>
-
+        <activity android:name="CurrentGames" android:label="Current Games"></activity>
+        
         <service android:name="com.parse.PushService" />
         <receiver android:name="com.parse.ParseBroadcastReceiver" >
             <intent-filter>

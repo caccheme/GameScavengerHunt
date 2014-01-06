@@ -61,8 +61,8 @@ public class GameItemsActivity extends Activity {
           CharSequence text = "There was a problem. Please hold.";
           int duration = Toast.LENGTH_SHORT;                     
           Toast.makeText(context, text, duration).show();
+          startActivity(getIntent());
           finish();
-          startActivity(getIntent()); 
         }
       }
     });  
@@ -80,22 +80,29 @@ public class GameItemsActivity extends Activity {
           @Override
           final public void done(ParseObject game, ParseException e) {
             if (e == null) {
-              final String new_item = userInput.getText().toString().trim(); 
+              final String new_item = userInput.getText().toString().trim();
+//              Is there a reason you're not using the getUserInput function you defined for this?
               final JSONArray items = game.getJSONArray("itemsList"); 
               if (items != null) {
                 items.put(new_item); 
                 game.put("itemsList", items);   
                 game.saveInBackground();
+                startActivity(getIntent());
                 finish();
-                startActivity(getIntent()); 
               }  
               else { 
                 final JSONArray new_items = new JSONArray();
                 new_items.put(new_item);
                 game.put("itemsList", new_items);
                 game.saveInBackground();
-                finish();
                 startActivity(getIntent());
+                finish();
+//                If code repeats in both branches of a conditional, move that code outside 
+//                the conditional. There's really only one conditional 
+//                part -- whether you use an existing array or make a new one.
+//                The simplest way to set new_items to a if else value is to use 
+//                the ternary operator. See 
+//                http://urbanhonking.com/ideasfordozens/2006/03/01/learns_to_use_the_ternary_oper/
              }
             }    
             else{
@@ -104,8 +111,8 @@ public class GameItemsActivity extends Activity {
               final int duration = Toast.LENGTH_SHORT;                     
               Toast.makeText(context, text, duration).show();
               Log.d("ScavengerHuntApp", "ParseObject retrieval error: " + Log.getStackTraceString(e));
-              finish();
               startActivity(getIntent());
+              finish();
             }
           }  
         });    
@@ -115,21 +122,21 @@ public class GameItemsActivity extends Activity {
     doneButton.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        finish();
         final Intent i = getIntent();
         final String GameId = i.getStringExtra("GameId");
         Intent b = new Intent(GameItemsActivity.this, GamePlayersActivity.class);
         b.putExtra("GameId", GameId);
         GameItemsActivity.this.startActivity(b);
+        finish();
       } 
     });
     final Button cancelButton = (Button) findViewById(R.id.manageItemsButton_cancel); 
     cancelButton.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        finish();
         Intent i = new Intent(GameItemsActivity.this, MainMenuActivity.class);
         GameItemsActivity.this.startActivity(i);
+        finish();
       }
     });
   }    

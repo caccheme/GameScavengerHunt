@@ -91,4 +91,6 @@
     <string name="hint_addItem">Type Item here</string>
     <string name="button_edititems">Edit Items</string>
     <string name="label_currentGameItems">Items</string>
+    <string name="header_Currentgameslist">Current Games</string>
+    
 </resources>

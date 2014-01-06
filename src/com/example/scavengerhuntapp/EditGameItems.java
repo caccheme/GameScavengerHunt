@@ -62,8 +62,8 @@ public class EditGameItems extends Activity {
               CharSequence text = "There was a problem. Please hold.";
               int duration = Toast.LENGTH_SHORT;                     
               Toast.makeText(context, text, duration).show();
+              startActivity(getIntent());
               finish();
-              startActivity(getIntent()); 
             }
           }
         });  
@@ -87,16 +87,16 @@ public class EditGameItems extends Activity {
                     items.put(new_item); 
                     game.put("itemsList", items);   
                     game.saveInBackground();
+                    startActivity(getIntent());
                     finish();
-                    startActivity(getIntent()); 
                   }  
                   else { 
                     JSONArray new_items = new JSONArray();
                     new_items.put(new_item);
                     game.put("itemsList", new_items);
-                    game.saveInBackground();
-                    finish();
+                    game.saveInBackground();                    
                     startActivity(getIntent());
+                    finish();
                  }
                 }    
                 else{
@@ -104,9 +104,9 @@ public class EditGameItems extends Activity {
                   CharSequence text = "Item didn't save, try again.";
                   int duration = Toast.LENGTH_SHORT;                     
                   Toast.makeText(context, text, duration).show();
-                  Log.d("ScavengerHuntApp", "ParseObject retrieval error: " + Log.getStackTraceString(e));
-                  finish();
+                  Log.d("ScavengerHuntApp", "ParseObject retrieval error: " + Log.getStackTraceString(e));                 
                   startActivity(getIntent());
+                  finish();
                 }
               }  
             });    
