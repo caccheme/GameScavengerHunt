@@ -92,5 +92,7 @@
     <string name="button_edititems">Edit Items</string>
     <string name="label_currentGameItems">Items</string>
     <string name="header_Currentgameslist">Current Games</string>
-    
+    <string name="title_activity_game_hub">Games</string>
+    <string name="title_activity_invited_game">Invited Games</string>
+    <string name="invited_games_instructions">Click to Play!</string>
 </resources>

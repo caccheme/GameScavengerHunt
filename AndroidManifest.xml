@@ -40,16 +40,26 @@
         <activity android:name="EditGameNameTime" android:label="Edit Game"></activity>
         <activity android:name="EditGamePlayers" android:label="Edit Game Players"></activity>
         <activity android:name="EditGameItems" android:label="Edit Items"></activity>
-        <activity android:name="CurrentGames" android:label="Current Games"></activity>
+        <activity android:name="InvitedGames" android:label="Invited Games"></activity>
         
         <service android:name="com.parse.PushService" />
+        
         <receiver android:name="com.parse.ParseBroadcastReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.USER_PRESENT" />
             </intent-filter>
         </receiver>       
-        
+    
+         <activity
+            android:name="com.example.scavengerhunt.InvitedGamesList"
+            android:label="@string/title_activity_invited_game" >
+        </activity>
+
+        <activity
+            android:name="com.example.scavengerhunt.GameHub"
+            android:label="@string/title_activity_game_hub" >
+        </activity>
         </application>
 
 </manifest>

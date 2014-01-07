@@ -52,7 +52,7 @@ public class MainMenuActivity extends Activity {
     joinGameButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainMenuActivity.this, CurrentGames.class));
+                startActivity(new Intent(MainMenuActivity.this, InvitedGames.class));
             }
     });
 
