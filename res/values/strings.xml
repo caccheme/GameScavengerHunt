@@ -95,4 +95,5 @@
     <string name="title_activity_game_hub">Games</string>
     <string name="title_activity_invited_game">Invited Games</string>
     <string name="invited_games_instructions">Click to Play!</string>
+    <string name="button_update">Update</string>
 </resources>

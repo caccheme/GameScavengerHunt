@@ -41,6 +41,7 @@
         <activity android:name="EditGamePlayers" android:label="Edit Game Players"></activity>
         <activity android:name="EditGameItems" android:label="Edit Items"></activity>
         <activity android:name="InvitedGames" android:label="Invited Games"></activity>
+        <activity android:name="PlayGame" android:label="Play Game"></activity>
         
         <service android:name="com.parse.PushService" />
         

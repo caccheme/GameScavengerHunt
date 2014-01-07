@@ -59,7 +59,7 @@ public class InvitedGames extends Activity {
     }
 
     private void launchGameView(String GameId) {
-        Intent intent = new Intent(InvitedGames.this, ViewGame.class);
+        Intent intent = new Intent(InvitedGames.this, PlayGame.class);
         intent.putExtra("GameId", GameId);
         Log.d("GameId", "Game id is " + GameId);
         startActivity(intent);
