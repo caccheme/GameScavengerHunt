@@ -96,4 +96,5 @@
     <string name="title_activity_invited_game">Invited Games</string>
     <string name="invited_games_instructions">Click to Play!</string>
     <string name="button_update">Update</string>
+    <string name="hint_itemslist">Check off each item when found &amp; \'Update\'</string>
 </resources>

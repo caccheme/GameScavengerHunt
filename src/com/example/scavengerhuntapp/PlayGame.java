@@ -78,9 +78,10 @@ public class PlayGame extends Activity {
                   Log.d("ScavengerHuntApp", "JSONObject exception: " + Log.getStackTraceString(exc));
                 }
               }
-              ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, itemsList);
-              ListView listView = (ListView) findViewById(R.id.listview_gameItems);
+              final ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_multiple_choice, itemsList);
+              final ListView listView = (ListView) findViewById(R.id.listview_gameItems);
               listView.setAdapter(adapter);
+              listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
             }
           }
           else {

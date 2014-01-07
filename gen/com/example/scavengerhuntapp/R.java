@@ -136,6 +136,7 @@ public final class R {
         public static final int hint_email=0x7f050013;
         public static final int hint_endDate=0x7f050028;
         public static final int hint_endTime=0x7f050029;
+        public static final int hint_itemslist=0x7f05004e;
         public static final int hint_newGameName=0x7f05002a;
         public static final int hint_newgameenddate=0x7f050032;
         public static final int hint_newgamename=0x7f050024;
