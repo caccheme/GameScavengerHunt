@@ -46,7 +46,7 @@ public class InvitedGames extends Activity {
                 android.R.layout.simple_list_item_1);
         final ListView currentGamesListview = (ListView) findViewById(R.id.listview_CurrentGames);
         currentGamesListview.setAdapter(adapter);
-        findCurrentCreatedGames();
+        findCurrentInvitedGames();
         currentGamesListview
                 .setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
@@ -69,31 +69,36 @@ public class InvitedGames extends Activity {
         adapter.add(game.getString("name"));
         adapter.notifyDataSetChanged();
     }
-
-//    private void findInvitedCurrentCreatedGames() {
-//        ParseQuery<ParseObject> query = ParseQuery.getQuery("GamePlayer");
-//        query.whereEqualTo("user", currentUser);
-//        query.include("game");
-//        query.findInBackground(new FindCallback<ParseObject>() {
-//            @Override
-//            public void done(List<ParseObject> gamePlayers, ParseException e) {
-//                if (e == null) {
-//                    for (ParseObject gamePlayerObject : gamePlayers) {
-//                        final ParseObject game = gamePlayerObject
-//                                .getParseObject("game"); <---need to get the object but "game" is a string here from GamePlayer table
-//                        currentGames.add(game);
-//                        addToListView(game, getCurrentGamesAdapter());
-//
-//                    }
-//                } else {
-//                    Log.w("error", "game retreival failure");
-//                }
-//            }
-//            });
+  
+//    private void findGames() {
+//    	ParseQuery<ParseObject> innerQuery = ParseQuery.getQuery("Post");
+//    	innerQuery.whereExists("image");
+//    	ParseQuery<ParseObject> query = ParseQuery.getQuery("Comment");
+//    	query.whereMatchesQuery("post", innerQuery);
+//    	query.findInBackground(new FindCallback<ParseObject>() {
+//    	  public void done(List<ParseObject> commentList, ParseException e) {
+//    	    // comments now contains the comments for posts with images.
+//    	  }
+//    	});
+//    	
 //    }
     
+//  private void findGames() {
+//    ParseQuery<ParseObject> query = ParseQuery.getQuery("GamePlayer");
+//    query.whereEqualTo("user", currentUser);
+//    query.findInBackground(new FindCallback<ParseObject>() {
+//      public void done(List<ParseObject> gameList, ParseException e) {
+//       for (ParseObject game : gameList) {
+//        ParseObject post = game.getParseObject("post");
+//        Log.d("post", "retrieved a related post");
+//       }
+//     }
+//   });
+//  }
+    
+        
  // set up to show all games, need to filter by current user being a player....but ok for now so can do found item code
-    private void findCurrentCreatedGames() {
+    private void findCurrentInvitedGames() {
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Game");
 // query.whereEqualTo("user", currentUser);
         query.findInBackground(new FindCallback<ParseObject>() {
