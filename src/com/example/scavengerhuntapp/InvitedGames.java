@@ -23,7 +23,6 @@ import com.parse.ParseUser;
 public class InvitedGames extends Activity {
 
     ParseUser currentUser = ParseUser.getCurrentUser();
-//    List<ParseObject> currentGames;
     List<ParseObject> currentGames = new ArrayList<ParseObject>();
     
     @Override
@@ -69,33 +68,6 @@ public class InvitedGames extends Activity {
         adapter.add(game.getString("name"));
         adapter.notifyDataSetChanged();
     }
-  
-//    private void findGames() {
-//    	ParseQuery<ParseObject> innerQuery = ParseQuery.getQuery("Post");
-//    	innerQuery.whereExists("image");
-//    	ParseQuery<ParseObject> query = ParseQuery.getQuery("Comment");
-//    	query.whereMatchesQuery("post", innerQuery);
-//    	query.findInBackground(new FindCallback<ParseObject>() {
-//    	  public void done(List<ParseObject> commentList, ParseException e) {
-//    	    // comments now contains the comments for posts with images.
-//    	  }
-//    	});
-//    	
-//    }
-    
-//  private void findGames() {
-//    ParseQuery<ParseObject> query = ParseQuery.getQuery("GamePlayer");
-//    query.whereEqualTo("user", currentUser);
-//    query.findInBackground(new FindCallback<ParseObject>() {
-//      public void done(List<ParseObject> gameList, ParseException e) {
-//       for (ParseObject game : gameList) {
-//        ParseObject post = game.getParseObject("post");
-//        Log.d("post", "retrieved a related post");
-//       }
-//     }
-//   });
-//  }
-    
         
  // set up to show all games, need to filter by current user being a player....but ok for now so can do found item code
     private void findCurrentInvitedGames() {

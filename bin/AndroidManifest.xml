@@ -42,6 +42,7 @@
         <activity android:name="EditGameItems" android:label="Edit Items"></activity>
         <activity android:name="InvitedGames" android:label="Invited Games"></activity>
         <activity android:name="PlayGame" android:label="Play Game"></activity>
+        <activity android:name="JoinGamesDraft" android:label="JoinPlay Game"></activity>
         
         <service android:name="com.parse.PushService" />
         
@@ -52,15 +53,6 @@
             </intent-filter>
         </receiver>       
     
-         <activity
-            android:name="com.example.scavengerhunt.InvitedGamesList"
-            android:label="@string/title_activity_invited_game" >
-        </activity>
-
-        <activity
-            android:name="com.example.scavengerhunt.GameHub"
-            android:label="@string/title_activity_game_hub" >
-        </activity>
         </application>
 
 </manifest>
