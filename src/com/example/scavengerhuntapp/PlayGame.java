@@ -138,6 +138,7 @@ public class PlayGame extends Activity {
 
     public void onFoundItemDialog(final String name) {
     	sendFoundItemToParse(name);
+    	removeListItemFromView(name);
     }
 
     private void sendFoundItemToParse(final String name) {
@@ -155,6 +156,18 @@ public class PlayGame extends Activity {
             }
         });
     }
+    
+    private void removeListItemFromView(final String item) {
+        final ArrayAdapter<String> adapter = getItemAdapter();
+        adapter.remove(item);
+        adapter.notifyDataSetChanged();
+    }
 
+    private ArrayAdapter<String> getItemAdapter() {
+        final ListView itemListView = (ListView) findViewById(R.id.listview_remainingItems);
+        final ArrayAdapter<String> adapter = (ArrayAdapter<String>) itemListView
+                .getAdapter();
+        return adapter;
+    }
   
 }
