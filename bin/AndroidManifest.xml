@@ -43,7 +43,7 @@
         <activity android:name="InvitedGames" android:label="Invited Games"></activity>
         <activity android:name="PlayGame" android:label="Play Game"></activity>
         <activity android:name="JoinGamesDraft" android:label="JoinPlay Game"></activity>
-        <activity android:name="PlayGame" android:label="Play Game"></activity>
+        
         
         <service android:name="com.parse.PushService" />
         

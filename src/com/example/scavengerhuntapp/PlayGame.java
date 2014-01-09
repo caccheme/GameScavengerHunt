@@ -75,7 +75,7 @@ public class PlayGame extends Activity {
                     endDatetime.setText(game.getDate("end_datetime").toString());
 
                     initializeItemListView();
-                    getUserFoundItems();
+//                    getUserFoundItems();
                     setItemList(game); 
               } else {
                     Log.w("error", "game retrieval failure");
@@ -110,47 +110,6 @@ public class PlayGame extends Activity {
 	    });
     }
     
-    private void getUserFoundItems() {
-        final ParseQuery<ParseObject> query = ParseQuery.getQuery("FoundItem");
-        query.whereEqualTo("game", game);
-        query.whereEqualTo("user", currentUser);
-        query.findInBackground(new FindCallback<ParseObject>() {
-            public void done(final List<ParseObject> foundItems,
-                    ParseException e) {
-                if (e == null) {
-                    userFoundItems = foundItems;
-// get all items                  
-                    final ParseQuery<ParseObject> query = ParseQuery.getQuery("Game");
-                    final Intent i = getIntent();
-                    query.getInBackground(i.getStringExtra("GameId"), new GetCallback<ParseObject>() {
-                      @Override
-                      public void done(ParseObject game, ParseException e) {
-                        if (e == null) {
-                          JSONArray items = game.getJSONArray("itemsList");
-                          if (items != null) {
-                            final List<String> itemsList = new ArrayList<String>();
-                            for(int i = 0; i < items.length(); i++){
-                              try{
-                                itemsList.add(items.getString(i));
-                              }
-                              catch (Exception exc) {
-                                Log.d("ScavengerHuntApp", "JSONObject exception: " + Log.getStackTraceString(exc));
-                              }
-                            } 
-                            
-                          }
-                        }
-                      }
-                    });
-                  setScore(game.getJSONArray("itemsList"));
-                  deleteAlreadyFoundItems();    
-                } else {
-                    Log.w("Parse Error", "player username retrieval failure");
-                }
-            }
-        });
-
-    }    
     private void deleteAlreadyFoundItems() {
         final ParseQuery<ParseObject> query = ParseQuery.getQuery("FoundItem");
         query.whereEqualTo("game", game);
