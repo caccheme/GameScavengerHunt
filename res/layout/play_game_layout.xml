@@ -9,12 +9,21 @@
     tools:context=".GameHub" >
 
     <TextView
+        android:id="@+id/title_gameName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:text="Game Name"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
         android:id="@+id/hint_text_endDatetime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/title_gameName"
-        android:text="@string/title_enddatetime"
+        android:text="End Date and Time:"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <View
@@ -30,15 +39,35 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/hint_text_endDatetime"
-        android:text="@string/text_enddate"
+        android:text="Date and Time"
         android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/hint_text_score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/text_endDatetime"
+        android:layout_below="@+id/text_endDatetime"
+        android:paddingTop="10dp"
+        android:text="Score (Items I Found):"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:id="@+id/text_score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/hint_text_score"
+        android:layout_below="@+id/hint_text_score"
+        android:paddingBottom="10dp"
+        android:text="0"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <View
         android:id="@+id/bar2"
         android:layout_width="fill_parent"
         android:layout_height="0.5dp"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/text_endDatetime"
+        android:layout_below="@+id/text_score"
         android:background="@android:color/darker_gray" />
 
     <ListView
@@ -56,7 +85,7 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/bar2"
         android:paddingTop="10dp"
-        android:text="@string/title_remainingitems"
+        android:text="Remaining Items:"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
@@ -65,8 +94,18 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/title_remainingItems"
-        android:text="@string/hint_itemlist"
+        android:text="Touch to mark as found"
         android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:id="@+id/text_totalPoints"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/title_remainingItems"
+        android:layout_alignTop="@+id/text_score"
+        android:layout_toRightOf="@+id/text_score"
+        android:text=" out of 0"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <View
         android:layout_width="fill_parent"
@@ -75,22 +114,13 @@
         android:layout_alignTop="@+id/button_back"
         android:background="@android:color/darker_gray" />
 
-    <TextView
-        android:id="@+id/title_gameName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/hint_text_endDatetime"
-        android:layout_alignParentTop="true"
-        android:text="@string/title_gamename"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
     <Button
         android:id="@+id/button_back"
         style="?android:attr/buttonBarButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignRight="@+id/hint_remainingItems"
+        android:layout_centerHorizontal="true"
         android:text="@string/button_mainmenu" />
 
 </RelativeLayout>

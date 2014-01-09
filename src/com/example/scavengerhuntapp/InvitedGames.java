@@ -79,7 +79,7 @@ public class InvitedGames extends Activity {
                 if (e == null) {
                     for (final ParseObject game : games) {
                         Log.d("Game Info",
-                                "Game name is " + game.getString("game"));
+                                "Game name is " + game.getString("name"));
                         addToListView(game, getCurrentGamesAdapter());
                     }
                     currentGames = games;

@@ -97,12 +97,6 @@
     <string name="title_activity_invited_game">Invited Games</string>
     <string name="invited_games_instructions">Click to Play!</string>
     <string name="button_update">Update</string>
-    <string name="hint_itemslist">Click each item when found</string>
-    <string name="title_enddatetime">End Date and Time:</string>
-    <string name="text_enddate">End Date and Time</string>
-    <string name="title_remainingitems">Remaining Items:</string>
-    <string name="hint_itemlist">Touch item to mark as found</string>
-    <string name="title_gamename">Game Name</string>
     
         <!-- Found Item Dialog -->
     <string name="dialog_found">Yes, I found it!</string>

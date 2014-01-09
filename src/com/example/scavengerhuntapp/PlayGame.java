@@ -20,6 +20,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -28,11 +29,12 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 public class PlayGame extends Activity {
-  final List<ParseObject> itemList = new ArrayList<ParseObject>();
-  ParseObject game;
-  List<ParseObject> userFoundItems;
-  final ParseUser currentUser = ParseUser.getCurrentUser();
-  
+
+    ParseObject game;
+    List<ParseObject> userFoundItems;
+    final ParseUser currentUser = ParseUser.getCurrentUser();
+    int currentScore;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +44,12 @@ public class PlayGame extends Activity {
         getGame(gameId);
         setupButtonCallbacks(gameId);
     }
+
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.game_hub, menu);
+//        return true;
+//    }
 
     private void setupButtonCallbacks(final String GameId) {
         final Button menuButton = (Button) findViewById(R.id.button_back);
@@ -53,7 +61,7 @@ public class PlayGame extends Activity {
           }
         });
     }    
-
+    
     private void getGame(final String gameId) {
         final ParseQuery<ParseObject> query = ParseQuery.getQuery("Game");
         query.getInBackground(gameId, new GetCallback<ParseObject>() {
@@ -67,78 +75,186 @@ public class PlayGame extends Activity {
                     endDatetime.setText(game.getDate("end_datetime").toString());
 
                     initializeItemListView();
-                    setItemList(game);
-                } else {
+                    getUserFoundItems();
+                    setItemList(game); 
+              } else {
                     Log.w("error", "game retrieval failure");
                 }
             }
         });
     }
-    
-    private void setItemList(ParseObject game) {
-      final ParseQuery<ParseObject> query = ParseQuery.getQuery("Game");
-      final Intent i = getIntent();
-      final Context context = this;
-      query.getInBackground(i.getStringExtra("GameId"), new GetCallback<ParseObject>() {
-        @Override
-        public void done(ParseObject game, ParseException e) {
-          if (e == null) {
-            JSONArray items = game.getJSONArray("itemsList");
-            if (items != null) {
-              final List<String> itemsList = new ArrayList<String>();
-              for(int i = 0; i < items.length(); i++){
-                try{
-                  itemsList.add(items.getString(i));
-                }
-                catch (Exception exc) {
-                  Log.d("ScavengerHuntApp", "JSONObject exception: " + Log.getStackTraceString(exc));
-                }
-              } 
-              final ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, itemsList);
-              final ListView listView = (ListView) findViewById(R.id.listview_remainingItems);
-              listView.setAdapter(adapter);
-            }
-          }
-          else {
-            CharSequence text = "There was a problem. Please hold.";
-            int duration = Toast.LENGTH_SHORT;
-            Toast.makeText(context, text, duration).show();
-            finish();
-            startActivity(getIntent());
-          }
-        }
-      });
+
+    private void initializeItemListView() {
+      final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+            android.R.layout.simple_list_item_1);
+      final ListView itemListView = (ListView) findViewById(R.id.listview_remainingItems);
+      itemListView.setAdapter(adapter);
+      itemListView
+       .setOnItemClickListener(new AdapterView.OnItemClickListener() {
+	        @Override
+	        public void onItemClick(AdapterView<?> parent,
+	                final View view, int position, long id) {
+	            Log.d("Dialog Values",
+	                    "Position is " + String.valueOf(position)
+	                            + ". View is " + view.toString()
+	                            + ". ID is " + String.valueOf(id));
+	            final String itemName = (String) parent
+	                    .getItemAtPosition(position);
+	            Bundle item = new Bundle();
+	            item.putString("name", itemName);
+	            final DialogFragment itemFoundDialogFragment = new ItemFoundDialogFragment();
+	            itemFoundDialogFragment.setArguments(item);
+	            itemFoundDialogFragment.show(getFragmentManager(), "itemFound");
+	
+	        }
+	    });
     }
     
-    private void initializeItemListView() {
-        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1);
-        final ListView itemListView = (ListView) findViewById(R.id.listview_remainingItems);
-        itemListView.setAdapter(adapter);
-        itemListView
-                .setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent,
-                            final View view, int position, long id) {
-                        Log.d("Values",
-                                "Position is " + String.valueOf(position)
-                                        + ". View is " + view.toString()
-                                        + ". ID is " + String.valueOf(id));
-                        
-                        final String itemName = (String) parent.getItemAtPosition(position);
-                        Bundle item = new Bundle();
-                        item.putString("name", itemName);
-                        final DialogFragment itemFoundDialogFragment = new ItemFoundDialogFragment();
-                        itemFoundDialogFragment.setArguments(item);
-                        itemFoundDialogFragment.show(getFragmentManager(), "itemFound");
-                    }
-                });
+    private void getUserFoundItems() {
+        final ParseQuery<ParseObject> query = ParseQuery.getQuery("FoundItem");
+        query.whereEqualTo("game", game);
+        query.whereEqualTo("user", currentUser);
+        query.findInBackground(new FindCallback<ParseObject>() {
+            public void done(final List<ParseObject> foundItems,
+                    ParseException e) {
+                if (e == null) {
+                    userFoundItems = foundItems;
+// get all items                  
+                    final ParseQuery<ParseObject> query = ParseQuery.getQuery("Game");
+                    final Intent i = getIntent();
+                    query.getInBackground(i.getStringExtra("GameId"), new GetCallback<ParseObject>() {
+                      @Override
+                      public void done(ParseObject game, ParseException e) {
+                        if (e == null) {
+                          JSONArray items = game.getJSONArray("itemsList");
+                          if (items != null) {
+                            final List<String> itemsList = new ArrayList<String>();
+                            for(int i = 0; i < items.length(); i++){
+                              try{
+                                itemsList.add(items.getString(i));
+                              }
+                              catch (Exception exc) {
+                                Log.d("ScavengerHuntApp", "JSONObject exception: " + Log.getStackTraceString(exc));
+                              }
+                            } 
+                            
+                          }
+                        }
+                      }
+                    });
+                  setScore(game.getJSONArray("itemsList"));
+                  deleteAlreadyFoundItems();    
+                } else {
+                    Log.w("Parse Error", "player username retrieval failure");
+                }
+            }
+        });
 
+    }    
+    private void deleteAlreadyFoundItems() {
+        final ParseQuery<ParseObject> query = ParseQuery.getQuery("FoundItem");
+        query.whereEqualTo("game", game);
+        query.whereEqualTo("user", currentUser);
+        query.findInBackground(new FindCallback<ParseObject>() {
+            public void done(final List<ParseObject> foundItems, ParseException e) {
+                if (e == null) {
+                    userFoundItems = foundItems;
+                    for (final String listItem : getItemListViewItems()) {
+                        for (final ParseObject foundItem : userFoundItems) {
+                            if (listItem.equals(foundItem.getString("item"))) {
+                            	removeListItemFromView(listItem);
+                            }
+                        }
+                    }
+                } else {
+                    Log.w("Parse Error", "player username retrieval failure");
+                }
+            }
+        });
+    }
+
+    private ArrayList<String> getItemListViewItems() {
+        final ArrayList<String> itemList = new ArrayList<String>();
+        final ArrayAdapter<String> adapter = getItemAdapter();
+        for (int i = 0; i < (adapter.getCount()); i++) {
+            itemList.add(adapter.getItem(i));
+        }
+        return itemList;
+    }
+
+    private void setItemList(ParseObject game) {
+        final ParseQuery<ParseObject> query = ParseQuery.getQuery("Game");
+        final Intent i = getIntent();
+        final Context context = this;
+        query.getInBackground(i.getStringExtra("GameId"), new GetCallback<ParseObject>() {
+          @Override
+          public void done(ParseObject game, ParseException e) {
+            if (e == null) {
+              JSONArray items = game.getJSONArray("itemsList");
+              if (items != null) {
+                final List<String> itemsList = new ArrayList<String>();
+                for(int i = 0; i < items.length(); i++){
+                  try{
+                    itemsList.add(items.getString(i));
+                  }
+                  catch (Exception exc) {
+                    Log.d("ScavengerHuntApp", "JSONObject exception: " + Log.getStackTraceString(exc));
+                  }
+                } 
+                final ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, itemsList);
+                final ListView listView = (ListView) findViewById(R.id.listview_remainingItems);
+                listView.setAdapter(adapter);
+                
+                setScore(game.getJSONArray("itemsList"));
+                deleteAlreadyFoundItems();
+              }
+            }
+            else {
+              CharSequence text = "There was a problem. Please hold.";
+              int duration = Toast.LENGTH_SHORT;
+              Toast.makeText(context, text, duration).show();
+              finish();
+              startActivity(getIntent());
+            }
+          }
+        });
+      }                
+                
+    private void setScore(final JSONArray totalItems) {
+        final ParseQuery<ParseObject> query = ParseQuery.getQuery("FoundItem");
+        query.whereEqualTo("game", game);
+        query.whereEqualTo("user", currentUser);
+        query.findInBackground(new FindCallback<ParseObject>() {
+            public void done(final List<ParseObject> foundItems, ParseException e) {
+                if (e == null) {
+                    userFoundItems = foundItems;
+                    
+                    currentScore = userFoundItems.size();
+                    final TextView scoreView = (TextView) findViewById(R.id.text_score);
+                    final TextView totalPointsView = (TextView) findViewById(R.id.text_totalPoints);
+                    scoreView.setText(String.valueOf(currentScore));
+                    totalPointsView.setText(" out of " + totalItems.length());
+                } else {
+                    Log.w("Parse Error", "player username retrieval failure");
+                }
+            }
+        });
+    }
+
+    private ArrayAdapter<String> getItemAdapter() {
+        final ListView itemListView = (ListView) findViewById(R.id.listview_remainingItems);
+        final ArrayAdapter<String> adapter = (ArrayAdapter<String>) itemListView
+                .getAdapter();
+        return adapter;
     }
 
     public void onFoundItemDialog(final String name) {
-    	sendFoundItemToParse(name);
-    	removeListItemFromView(name);
+                        sendFoundItemToParse(name);
+                        removeListItemFromView(name);
+                        currentScore++;
+                        final TextView scoreView = (TextView) findViewById(R.id.text_score);
+                        scoreView.setText(String.valueOf(currentScore));
+//  put logic here to check if game over/won?
     }
 
     private void sendFoundItemToParse(final String name) {
@@ -156,18 +272,11 @@ public class PlayGame extends Activity {
             }
         });
     }
-    
+
     private void removeListItemFromView(final String item) {
         final ArrayAdapter<String> adapter = getItemAdapter();
         adapter.remove(item);
         adapter.notifyDataSetChanged();
     }
 
-    private ArrayAdapter<String> getItemAdapter() {
-        final ListView itemListView = (ListView) findViewById(R.id.listview_remainingItems);
-        final ArrayAdapter<String> adapter = (ArrayAdapter<String>) itemListView
-                .getAdapter();
-        return adapter;
-    }
-  
 }
