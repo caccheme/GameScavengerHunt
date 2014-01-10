@@ -236,7 +236,7 @@ public class PlayGame extends Activity {
     protected void markFoundItem(final String item) {
     	final ArrayAdapter<String> adapter = getItemAdapter();
         adapter.remove(item);
-    	adapter.add((item + " (found)"));
+    	adapter.add((item + " \u2713"));
         adapter.notifyDataSetChanged();
     }
     
