@@ -70,7 +70,7 @@ public class InvitedGames extends Activity {
         adapter.notifyDataSetChanged();
     }
    
-//    suggested attempt
+////    suggested attempt
 //    private void findCurrentInvitedGames() {
 //	 ParseQuery<ParseObject> gamePlayerQuery = ParseQuery.getQuery("GamePlayer");
 //	 gamePlayerQuery.whereEqualTo("user", currentUser);

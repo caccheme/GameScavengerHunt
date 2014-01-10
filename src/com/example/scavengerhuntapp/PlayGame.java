@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -121,7 +122,7 @@ public class PlayGame extends Activity {
                     for (final String listItem : getItemListViewItems()) {
                         for (final ParseObject foundItem : userFoundItems) {
                             if (listItem.equals(foundItem.getString("item"))) {
-                            	removeListItemFromView(listItem);
+                            	markFoundItem(listItem);
                             }
                         }
                     }
@@ -209,7 +210,7 @@ public class PlayGame extends Activity {
 
     public void onFoundItemDialog(final String name) {
                         sendFoundItemToParse(name);
-                        removeListItemFromView(name);
+                        markFoundItem(name);
                         currentScore++;
                         final TextView scoreView = (TextView) findViewById(R.id.text_score);
                         scoreView.setText(String.valueOf(currentScore));
@@ -232,10 +233,11 @@ public class PlayGame extends Activity {
         });
     }
 
-    private void removeListItemFromView(final String item) {
-        final ArrayAdapter<String> adapter = getItemAdapter();
+    protected void markFoundItem(final String item) {
+    	final ArrayAdapter<String> adapter = getItemAdapter();
         adapter.remove(item);
+    	adapter.add((item + " (found)"));
         adapter.notifyDataSetChanged();
     }
-
+    
 }
