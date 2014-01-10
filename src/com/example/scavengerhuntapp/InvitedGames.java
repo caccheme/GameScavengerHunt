@@ -1,6 +1,7 @@
 package com.example.scavengerhuntapp;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import android.app.Activity;
@@ -79,7 +80,11 @@ public class InvitedGames extends Activity {
 				                  for (ParseObject game : games) {
 				                      Log.d("Parse GameName",
 				                              "Retrieved Game Named: " + game.getString("name"));
-				                  addToListView(game, getCurrentGamesAdapter());                    
+				                      Date startDatetime = game.getDate("start_datetime");
+				                      if (new Date().after(startDatetime)) {  
+				                    	  addToListView(game, getCurrentGamesAdapter());
+				                        }			                  
+				                                          
 				                  }
 				              } else {
 				                  Log.w("Parse Error", "game name retreival failure");
