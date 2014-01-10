@@ -32,16 +32,16 @@ public class GameItemsActivity extends Activity {
     listCurrentItems();
     setupButtonCallbacks();
   }
-  
+
   private void listCurrentItems(){
-    final ParseQuery<ParseObject> query = ParseQuery.getQuery("Game");
+   final ParseQuery<ParseObject> query = ParseQuery.getQuery("Game");
     final Intent i = getIntent(); 
     final Context context = this;
     query.getInBackground(i.getStringExtra("GameId"), new GetCallback<ParseObject>() {
       @Override
       public void done(ParseObject game, ParseException e) {
         if (e == null) {
-          JSONArray items = game.getJSONArray("itemsList"); 
+          JSONArray items = game.getJSONArray("itemsList");
           if (items != null) {        
             final List<String> itemsList = new ArrayList<String>();
             for(int i = 0; i < items.length(); i++){
@@ -52,15 +52,11 @@ public class GameItemsActivity extends Activity {
                 Log.d("ScavengerHuntApp", "JSONObject exception: " + Log.getStackTraceString(exc));
               }
             }
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, itemsList); 
-            ListView listView = (ListView) findViewById(R.id.listView1);
-            listView.setAdapter(adapter);  
+            setupItemListView(itemsList);
           }
         }
         else {
-          CharSequence text = "There was a problem. Please hold.";
-          int duration = Toast.LENGTH_SHORT;                     
-          Toast.makeText(context, text, duration).show();
+          showToast(context);
           startActivity(getIntent());
           finish();
         }
@@ -68,8 +64,26 @@ public class GameItemsActivity extends Activity {
     });  
   }
   
+  private void showToast(Context context) {
+	    CharSequence text = "There was a problem with this action.";
+        int duration = Toast.LENGTH_SHORT;                     
+        Toast.makeText(context, text, duration).show();
+  }
+  
+  private void setupItemListView(List<String> itemsList) {
+      final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+              android.R.layout.simple_list_item_1, itemsList);
+      final ListView listView = (ListView) findViewById(R.id.listView1);
+      listView.setAdapter(adapter);      
+  }
+  
+  private String getUserInput(int id) {
+      EditText input = (EditText) findViewById(id);
+      return input.getText().toString();
+  }
+
+  
   private void setupButtonCallbacks() {
-    final EditText userInput = (EditText) findViewById(R.id.enterText);
     final Button addItemButton = (Button) findViewById(R.id.manageItemsButton_addItem);
     addItemButton.setOnClickListener(new OnClickListener() {
       @Override
@@ -80,36 +94,18 @@ public class GameItemsActivity extends Activity {
           @Override
           final public void done(ParseObject game, ParseException e) {
             if (e == null) {
-              final String new_item = userInput.getText().toString().trim();
-//              Is there a reason you're not using the getUserInput function you defined for this?
-              final JSONArray items = game.getJSONArray("itemsList"); 
+              final JSONArray items = game.getJSONArray("itemsList");	
               if (items != null) {
-                items.put(new_item); 
-                game.put("itemsList", items);   
-                game.saveInBackground();
-                startActivity(getIntent());
-                finish();
+            	  addItemsToArray(items, game);
               }  
               else { 
                 final JSONArray new_items = new JSONArray();
-                new_items.put(new_item);
-                game.put("itemsList", new_items);
-                game.saveInBackground();
-                startActivity(getIntent());
-                finish();
-//                If code repeats in both branches of a conditional, move that code outside 
-//                the conditional. There's really only one conditional 
-//                part -- whether you use an existing array or make a new one.
-//                The simplest way to set new_items to a if else value is to use 
-//                the ternary operator. See 
-//                http://urbanhonking.com/ideasfordozens/2006/03/01/learns_to_use_the_ternary_oper/
+                addItemsToArray(new_items, game);
              }
             }    
             else{
               Context context = getApplicationContext();
-              CharSequence text = "Item didn't save, try again.";
-              final int duration = Toast.LENGTH_SHORT;                     
-              Toast.makeText(context, text, duration).show();
+              showToast(context);
               Log.d("ScavengerHuntApp", "ParseObject retrieval error: " + Log.getStackTraceString(e));
               startActivity(getIntent());
               finish();
@@ -134,11 +130,19 @@ public class GameItemsActivity extends Activity {
     cancelButton.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        Intent i = new Intent(GameItemsActivity.this, MainMenuActivity.class);
-        GameItemsActivity.this.startActivity(i);
+        GameItemsActivity.this.startActivity(new Intent(GameItemsActivity.this, MainMenuActivity.class));
         finish();
       }
     });
   }    
 
+  private void addItemsToArray(JSONArray items, ParseObject game){
+      final String new_item = getUserInput(R.id.enterText); 
+	  items.put(new_item); 
+      game.put("itemsList", items);   
+      game.saveInBackground();
+      startActivity(getIntent());
+      finish();
+  }
+  
 }

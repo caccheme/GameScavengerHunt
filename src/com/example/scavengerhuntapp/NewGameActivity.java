@@ -25,80 +25,62 @@ public class NewGameActivity extends Activity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.newgamecreate);
     setupButtonCallbacks();
-  }
-
+  }  
+  
   private void setupButtonCallbacks() {
 	final Button createGameButton = (Button) findViewById(R.id.newGameButton_continue);
     createGameButton.setOnClickListener(new OnClickListener() {
         @Override
         public void onClick(View v) {
-            final ParseObject game = new ParseObject("Game");
-            final ParseUser currentUser = ParseUser.getCurrentUser();
-            game.put("name", getUserInput(R.id.edit_gameName));
-            game.put("creator", currentUser);
-            game.put("start_datetime", getStartDateTime());
-            game.put("end_datetime", getEndDateTime());
-            game.saveInBackground(new SaveCallback() {
-      		@Override
-      		public void done(com.parse.ParseException e) {
-                  if (e == null) {
-                      Log.d("Game Creation", "Game Name/Times Created!");
-                      final String GameId = game.getObjectId();
-                      final Intent i = new Intent(NewGameActivity.this, GameItemsActivity.class);
-                      i.putExtra("GameId", GameId);
-                      NewGameActivity.this.startActivity(i);
-                  } else {
-                      Log.d("Game Creation", "Error creating game: " + e);
-                  }
-      		}
-            });
-
+          doCreateGame();
         } 
     } );
     final Button cancelButton = (Button) findViewById(R.id.newGameButton_cancel); 
     cancelButton.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        Intent i = new Intent(NewGameActivity.this, MainMenuActivity.class);
-        NewGameActivity.this.startActivity(i);
+        NewGameActivity.this.startActivity(new Intent(NewGameActivity.this, MainMenuActivity.class));
         finish();
       }
     });
   }
+  
+  private void doCreateGame() {
+      final ParseObject game = new ParseObject("Game");
+      final ParseUser currentUser = ParseUser.getCurrentUser();
+      game.put("name", getUserInput(R.id.edit_gameName));
+      game.put("creator", currentUser);
+      game.put("start_datetime", getDateTime(R.id.editStartDate, R.id.editStartTime));
+      game.put("end_datetime", getDateTime(R.id.editEndDate, R.id.editEndTime));
+      game.saveInBackground(new SaveCallback() {
+		@Override
+		public void done(com.parse.ParseException e) {
+            if (e == null) {
+                Log.d("Game Creation", "Game Name/Times Created!");
+                final String GameId = game.getObjectId();
+                final Intent i = new Intent(NewGameActivity.this, GameItemsActivity.class);
+                i.putExtra("GameId", GameId);
+                NewGameActivity.this.startActivity(i);
+            } else {
+                Log.d("Game Creation", "Error creating game: " + e);
+            }
+       };
+      });
+  }
 
-  private Date getStartDateTime() {
+  private Date getDateTime(int date, int time) {	
 	  final SimpleDateFormat dateFormat = new SimpleDateFormat(
               "MM-dd-yyyy h:mm a", Locale.US);
-      Date convertedDate = new Date();
-      try {
-          convertedDate = dateFormat.parse(getUserInput(R.id.editStartDate) + " "
-                  + getUserInput(R.id.editStartTime));
+	  Date convertedDate = new Date();
+	  try {
+          convertedDate = dateFormat.parse(getUserInput(date) + " "
+                  + getUserInput(time));
       } 
       catch (java.text.ParseException e) {
           e.printStackTrace();
       }
-      return convertedDate;   
+      return convertedDate;
   }
-
-  private Date getEndDateTime() {
-	  final SimpleDateFormat dateFormat = new SimpleDateFormat(
-              "MM-dd-yyyy h:mm a", Locale.US);
-      Date convertedDate = new Date();
-      try {
-          convertedDate = dateFormat.parse(getUserInput(R.id.editEndDate) + " "
-                  + getUserInput(R.id.editEndTime));
-      } 
-      catch (java.text.ParseException e) {
-          e.printStackTrace();
-      }
-      return convertedDate;   
-  }
-
-//This is something that can be refactored much better. 
-//There's one general task: parse and return the date in some user input. 
-//Replace these two methods with just one getDateTime() method 
-//that takes a view ID parameter. 
-//Fix the calling code appropriately.
   
   private String getUserInput(int id) {
       EditText input = (EditText) findViewById(id);
@@ -125,9 +107,8 @@ public class NewGameActivity extends Activity {
       newFragment.show(getFragmentManager(), "endTimePicker");
   }
   
-//Seems like you need just two methods not four here: 
-//	one for showing date pickers, one for showing time pickers, 
-//	with a parameter for the name of the picker.
-//You pass a parameter in these methods but you don't use it.
+//Need four methods, one for each date/time EditText onClick handler
+//  the parameter View v is used by the handler to find the method
+//  otherwise I get an IlleglStateException
 
 }
