@@ -1,7 +1,6 @@
 package com.example.scavengerhuntapp;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import android.app.Activity;
@@ -25,6 +24,7 @@ public class InvitedGames extends Activity {
 
     ParseUser currentUser = ParseUser.getCurrentUser();
     List<ParseObject> currentGames = new ArrayList<ParseObject>();
+    List<ParseObject> gameIdsList = new ArrayList<ParseObject>();
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,56 +65,34 @@ public class InvitedGames extends Activity {
         startActivity(intent);
     }
 
+    private void findCurrentInvitedGames() {
+      final ParseQuery<ParseObject> fquery = ParseQuery.getQuery("GamePlayer");
+      fquery.whereEqualTo("user", currentUser);
+      fquery.findInBackground(new FindCallback<ParseObject>() {
+          @Override
+          public void done(List<ParseObject> gameIdList, ParseException e) {
+               	 ParseQuery<ParseObject> squery = ParseQuery.getQuery("Game");
+				      squery.whereMatchesKeyInQuery("objectId", "game", fquery);        
+				      squery.findInBackground(new FindCallback<ParseObject>() {
+				          public void done(List<ParseObject> games, ParseException e) {
+				              if (e == null) {
+				                  for (ParseObject game : games) {
+				                      Log.d("Parse GameName",
+				                              "Retrieved Game Named: " + game.getString("name"));
+				                  addToListView(game, getCurrentGamesAdapter());                    
+				                  }
+				              } else {
+				                  Log.w("Parse Error", "game name retreival failure");
+				              }
+				        }
+				   }); 
+              }           
+      });
+    }
+
     private void addToListView(ParseObject game, ArrayAdapter<String> adapter) {
         adapter.add(game.getString("name"));
         adapter.notifyDataSetChanged();
-    }
-   
-////    suggested attempt
-//    private void findCurrentInvitedGames() {
-//	 ParseQuery<ParseObject> gamePlayerQuery = ParseQuery.getQuery("GamePlayer");
-//	 gamePlayerQuery.whereEqualTo("user", currentUser);
-////	 gamePlayerQuery.selectKeys(Arrays.asList("game"));
-////	 make an array of gameIds and then put that in the match thing below
-//	    ParseQuery<ParseObject> gameQuery = ParseQuery.getQuery("Game");
-//	    gameQuery.whereMatchesKeyInQuery("ObjectId", "game", gamePlayerQuery);
-//	    gameQuery.findInBackground(new FindCallback<ParseObject>() {	    	
-//	      public void done(List<ParseObject> games, ParseException e) {
-//	          if (e == null) {
-//                for (final ParseObject game : games) {
-//                    Log.d("Game Info",
-//                            "Game name is " + game.getString("name"));
-//                    addToListView(game, getCurrentGamesAdapter());
-//                }
-//                currentGames = games;
-//            } else {
-//                Log.w("error", "game retreival failure");
-//            }
-//	      }
-//	    });
-//	    
-//    }
-     
-    
- // set up to show all games, need to filter by current user being a player....but ok for now so can do found item code
-    private void findCurrentInvitedGames() {
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("Game");
-// query.whereEqualTo("user", currentUser);
-        query.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> games, ParseException e) {
-                if (e == null) {
-                    for (final ParseObject game : games) {
-                        Log.d("Game Info",
-                                "Game name is " + game.getString("name"));
-                        addToListView(game, getCurrentGamesAdapter());
-                    }
-                    currentGames = games;
-                } else {
-                    Log.w("error", "game retreival failure");
-                }
-            }
-        });
     }
     
     private ArrayAdapter<String> getCurrentGamesAdapter() {
@@ -123,7 +101,7 @@ public class InvitedGames extends Activity {
                 .getAdapter();
         return adapter;
     }
-    
+           
     private void setupButtonCallbacks() {
       final Button menuButton = (Button) findViewById(R.id.CurrentgameslistButton_menu);
       menuButton.setOnClickListener(new OnClickListener() {
