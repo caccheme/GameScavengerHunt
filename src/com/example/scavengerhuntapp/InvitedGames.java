@@ -1,6 +1,7 @@
 package com.example.scavengerhuntapp;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import android.app.Activity;
@@ -68,7 +69,33 @@ public class InvitedGames extends Activity {
         adapter.add(game.getString("name"));
         adapter.notifyDataSetChanged();
     }
-        
+   
+//    suggested attempt
+//    private void findCurrentInvitedGames() {
+//	 ParseQuery<ParseObject> gamePlayerQuery = ParseQuery.getQuery("GamePlayer");
+//	 gamePlayerQuery.whereEqualTo("user", currentUser);
+////	 gamePlayerQuery.selectKeys(Arrays.asList("game"));
+////	 make an array of gameIds and then put that in the match thing below
+//	    ParseQuery<ParseObject> gameQuery = ParseQuery.getQuery("Game");
+//	    gameQuery.whereMatchesKeyInQuery("ObjectId", "game", gamePlayerQuery);
+//	    gameQuery.findInBackground(new FindCallback<ParseObject>() {	    	
+//	      public void done(List<ParseObject> games, ParseException e) {
+//	          if (e == null) {
+//                for (final ParseObject game : games) {
+//                    Log.d("Game Info",
+//                            "Game name is " + game.getString("name"));
+//                    addToListView(game, getCurrentGamesAdapter());
+//                }
+//                currentGames = games;
+//            } else {
+//                Log.w("error", "game retreival failure");
+//            }
+//	      }
+//	    });
+//	    
+//    }
+     
+    
  // set up to show all games, need to filter by current user being a player....but ok for now so can do found item code
     private void findCurrentInvitedGames() {
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Game");
