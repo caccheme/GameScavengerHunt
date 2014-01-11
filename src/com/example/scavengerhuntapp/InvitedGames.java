@@ -84,7 +84,7 @@ public class InvitedGames extends Activity {
 				                      if (new Date().after(startDatetime)) {  
 				                    	  addToListView(game, getCurrentGamesAdapter());
 				                        }			                  
-				                                          
+				                      currentGames = games;        
 				                  }
 				              } else {
 				                  Log.w("Parse Error", "game name retreival failure");
