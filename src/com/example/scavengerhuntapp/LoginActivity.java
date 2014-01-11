@@ -52,9 +52,25 @@ public class LoginActivity extends Activity {
             progressDialog = null;
         }
     }
+
+    private void showLoginProgressDialog(String username){
+        progressDialog = ProgressDialog.show(LoginActivity.this,
+                getString(R.string.label_login_please_wait),
+                getString(R.string.label_login_in_progress) + " '" + username
+                        + "'");
+
+    }
+
+    private void showSignUpProgressDialog(String username){
+        progressDialog = ProgressDialog.show(LoginActivity.this,
+                getString(R.string.label_login_please_wait),
+                getString(R.string.label_signup_in_progress) + " '" + username
+                        + "'");
+    }
+
     
     private final FindCallback <ParseUser> userFindCallback = new FindUserCallback();
-    
+
     private void showToast(String message) {
         ScavengerHuntApplication.getInstance().showToast(LoginActivity.this,
                 message);
@@ -63,18 +79,11 @@ public class LoginActivity extends Activity {
     private void setupButtonCallbacks() {
         findViewById(R.id.loginbutton_continue).setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
-                if (getUserNameInput() != null && getUserNameInput().length() != 0) {
-                    showToast(getString(R.string.hint_username));
-                  }
-                if (getUserPasswordInput() != null && getUserPasswordInput().length() != 0) {
-                    showToast(getString(R.string.hint_password));
-                  }
-                if (android.util.Patterns.EMAIL_ADDRESS.matcher(getUserEmailInput()).matches() 
-                		&& getUserEmailInput() != null) {
-                    showToast(getString(R.string.hint_email));
-                  }
-                else {};
-                queryForUser();                 
+                
+                if (isValidLoginData()) {
+                    queryForUser();
+                };
+                                
             }
         });
         findViewById(R.id.loginbutton_cancel).setOnClickListener(new OnClickListener() {
@@ -101,12 +110,35 @@ public class LoginActivity extends Activity {
          EditText input = (EditText) findViewById(id);
          return input.getText().toString();
     }
+
+    private boolean isValidLoginData() {
+        if (!isValidEntry(getUserNameInput())) {
+            showToast(getString(R.string.hint_username));
+            return false;
+        }
+        if (!isValidEntry(getUserPasswordInput())) {
+            showToast(getString(R.string.hint_password));
+            return false;
+        }
+        if (!isValidEmail(getUserEmailInput())) {
+            showToast(getString(R.string.hint_email));
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+
+    public final static boolean isValidEmail(CharSequence target) {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches() && target != null;
+    }
+    
+    private final boolean isValidEntry(String s){
+        return s != null && s.length() != 0;
+    }
     
     private void queryForUser(){
-        progressDialog = ProgressDialog.show(LoginActivity.this,
-                getString(R.string.label_login_please_wait),
-                getString(R.string.label_login_in_progress) + " '" + 
-                getUserNameInput() + "'");
+        showLoginProgressDialog(getUserNameInput());
 
         List<ParseQuery<ParseUser>> parseUserQueryList = new ArrayList<ParseQuery<ParseUser>>();
         final ParseQuery<ParseUser> parseUsernameQuery = ParseUser.getQuery();
@@ -141,10 +173,7 @@ public class LoginActivity extends Activity {
     };
 
     private void doSignUp() {
-        progressDialog = ProgressDialog.show(LoginActivity.this,
-                getString(R.string.label_login_please_wait),
-                getString(R.string.label_signup_in_progress) + " '" + getUserNameInput()
-                        + "'");
+        showSignUpProgressDialog(getUserNameInput());
         ParseUser user = new ParseUser();
         user.setUsername(getUserNameInput());
         user.setPassword(getUserPasswordInput());
@@ -172,10 +201,7 @@ public class LoginActivity extends Activity {
         }
     };
     private void doLogin() {
-        progressDialog = ProgressDialog.show(LoginActivity.this,
-                getString(R.string.label_login_please_wait),
-                getString(R.string.label_login_in_progress) + 
-                " '" + getUserNameInput() + "'");
+        showLoginProgressDialog(getUserNameInput());
         ParseUser.logInInBackground(getUserNameInput(), getUserPasswordInput(), loginCallback);
     }
 
