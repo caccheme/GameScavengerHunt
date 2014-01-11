@@ -80,11 +80,11 @@ public class InvitedGames extends Activity {
 				                  for (ParseObject game : games) {
 				                      Log.d("Parse GameName",
 				                              "Retrieved Game Named: " + game.getString("name"));
-				                      Date startDatetime = game.getDate("start_datetime");
-				                      if (new Date().after(startDatetime)) {
+//				                      Date startDatetime = game.getDate("start_datetime");
+//				                      if (new Date().after(startDatetime)) {
 				                    	  currentGames.add(game);
 				                    	  addToListView(game, getCurrentGamesAdapter());
-				                        }			                  
+//				                        }			                  
 				                          
 				                  }
 				              } else {

@@ -1,6 +1,8 @@
 package com.example.scavengerhuntapp;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -9,8 +11,8 @@ import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Paint;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -150,23 +152,41 @@ public class PlayGame extends Activity {
           @Override
           public void done(ParseObject game, ParseException e) {
             if (e == null) {
-              JSONArray items = game.getJSONArray("itemsList");
-              if (items != null) {
-                final List<String> itemsList = new ArrayList<String>();
-                for(int i = 0; i < items.length(); i++){
-                  try{
-                    itemsList.add(items.getString(i));
-                  }
-                  catch (Exception exc) {
-                    Log.d("ScavengerHuntApp", "JSONObject exception: " + Log.getStackTraceString(exc));
-                  }
-                } 
-                final ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, itemsList);
-                final ListView listView = (ListView) findViewById(R.id.listview_remainingItems);
-                listView.setAdapter(adapter);
-                
-                setScore(game.getJSONArray("itemsList"));
-                deleteAlreadyFoundItems();
+              final Date startDatetime = game.getDate("start_datetime");
+              if (new Date().after(startDatetime)) {
+	              JSONArray items = game.getJSONArray("itemsList");
+	              if (items != null) {
+	                final List<String> itemsList = new ArrayList<String>();
+	                for(int i = 0; i < items.length(); i++){
+	                  try{
+	                    itemsList.add(items.getString(i));
+	                  }
+	                  catch (Exception exc) {
+	                    Log.d("ScavengerHuntApp", "JSONObject exception: " + Log.getStackTraceString(exc));
+	                  }
+	                } 
+	                final ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, itemsList);
+	                final ListView listView = (ListView) findViewById(R.id.listview_remainingItems);
+	                listView.setAdapter(adapter);
+	                
+	                setScore(game.getJSONArray("itemsList"));
+	                deleteAlreadyFoundItems();
+	             }  
+              }
+              
+              if (new Date().before(startDatetime)) {
+	              JSONArray items = game.getJSONArray("itemsList");
+	              if (items != null) {
+	                final List<String> itemsList = new ArrayList<String>();
+//	                possible way to format....to test later
+//	                final SimpleDateFormat df = new SimpleDateFormat("EEE MMM");
+//	                itemsList.add("Game hasn't started yet. Come back on " + df.format(game.getDate("start_datetime").toString()) + ".");
+	                itemsList.add("Game hasn't started yet. Come back on " + game.getDate("start_datetime").toString() + ".");
+	                
+	                final ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, itemsList);
+	                final ListView listView = (ListView) findViewById(R.id.listview_remainingItems);
+	                listView.setAdapter(adapter);	                
+	             }  
               }
             }
             else {
