@@ -81,10 +81,11 @@ public class InvitedGames extends Activity {
 				                      Log.d("Parse GameName",
 				                              "Retrieved Game Named: " + game.getString("name"));
 				                      Date startDatetime = game.getDate("start_datetime");
-				                      if (new Date().after(startDatetime)) {  
+				                      if (new Date().after(startDatetime)) {
+				                    	  currentGames.add(game);
 				                    	  addToListView(game, getCurrentGamesAdapter());
 				                        }			                  
-				                      currentGames = games;        
+				                          
 				                  }
 				              } else {
 				                  Log.w("Parse Error", "game name retreival failure");
