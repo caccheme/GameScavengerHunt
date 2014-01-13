@@ -245,17 +245,32 @@ public class PlayGame extends Activity {
                 .getAdapter();
         return adapter;
     }
-
+    
     public void onFoundItemDialog(final String name) {
-                        sendFoundItemToParse(name);
+        final ParseQuery<ParseObject> query = ParseQuery.getQuery("Game");
+        query.whereExists("winner");
+        query.getInBackground(game.getObjectId(), new GetCallback<ParseObject>() {
+            public void done(ParseObject currentGame, ParseException e) {
+                if (e == null) {
+                    if(currentGame == null){
+                    	sendFoundItemToParse(name);
                         markFoundItem(name);
                         currentScore++;
                         final TextView scoreView = (TextView) findViewById(R.id.text_score);
                         scoreView.setText(String.valueOf(currentScore));
                    
-//                        checkGameFinish();
                         checkIfWinner();
-     }
+                    }
+                    else{
+                    	launchGameAlreadyWonDialogFragment();
+                    }
+                } else {
+                    Log.w("error", "game retrieval error");
+                }
+            }
+
+        });
+    }
                          
     private void checkIfWinner() {
     	final JSONArray totalItems = game.getJSONArray("itemsList");
@@ -281,6 +296,10 @@ public class PlayGame extends Activity {
          winnerDialogFragment.show(getFragmentManager(), "Winner");
     }
     
+    private void launchGameAlreadyWonDialogFragment() {
+    	final DialogFragment gameAlreadyWonDialogFragment = new GameAlreadyWonDialogFragment();     		            
+         gameAlreadyWonDialogFragment.show(getFragmentManager(), "Game Already Won");
+    }
     
     private void sendFoundItemToParse(final String name) {
         final ParseObject foundItem = new ParseObject("FoundItem");
@@ -320,5 +339,5 @@ public class PlayGame extends Activity {
                 }
             });   
     }
-    
+        
 }

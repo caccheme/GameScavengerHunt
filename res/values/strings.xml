@@ -102,7 +102,7 @@
     <string name="dialog_found">Yes, I found it!</string>
     <string name="dialog_cancel">Cancel</string>
     
-    <string name="alreadyWon">Another player just won. Thanks for playing!</string>
+    <string name="alreadyWon">Sorry, another player just won. Thanks for playing!</string>
     <string name="gameTimedOut">This game has timed out.</string>
     <string name="youWin">Congratulations! You Win!</string>
 </resources>
