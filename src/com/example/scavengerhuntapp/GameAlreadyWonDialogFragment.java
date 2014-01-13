@@ -13,9 +13,9 @@ public class GameAlreadyWonDialogFragment extends DialogFragment{
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(R.string.alreadyWon)
-               .setPositiveButton("Return to Main Menu", new DialogInterface.OnClickListener() {
+               .setPositiveButton("Choose a different game to play", new DialogInterface.OnClickListener() {
                    public void onClick(DialogInterface dialog, int id) {
-                       Intent intent = new Intent(getActivity(), MainMenuActivity.class);
+                       Intent intent = new Intent(getActivity(), InvitedGames.class);
                        startActivity(intent);
                    }
                });

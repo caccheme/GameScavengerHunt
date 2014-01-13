@@ -3,6 +3,8 @@ package com.example.scavengerhuntapp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.json.JSONArray;
 
@@ -51,7 +53,7 @@ public class PlayGame extends Activity {
 //        getMenuInflater().inflate(R.menu.game_hub, menu);
 //        return true;
 //    }
-
+    
     private void setupButtonCallbacks(final String GameId) {
         final Button menuButton = (Button) findViewById(R.id.button_back);
         menuButton.setOnClickListener(new OnClickListener() {
@@ -76,15 +78,16 @@ public class PlayGame extends Activity {
                     endDatetime.setText(game.getDate("end_datetime").toString());
                     
                     initializeItemListView();
-//                    getUserFoundItems();
-                    setItemList(game); 
+
+                    setItemList(game);
+//                    timedAutoCheck();
               } else {
                     Log.w("error", "game retrieval failure");
                 }
             }
         });
     }
-
+    
     private void initializeItemListView() {
       final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
             android.R.layout.simple_list_item_1);
