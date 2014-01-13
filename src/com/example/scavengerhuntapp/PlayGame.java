@@ -238,7 +238,7 @@ public class PlayGame extends Activity {
             }
         });
     }
-
+    
     private ArrayAdapter<String> getItemAdapter() {
         final ListView itemListView = (ListView) findViewById(R.id.listview_remainingItems);
         final ArrayAdapter<String> adapter = (ArrayAdapter<String>) itemListView
@@ -247,18 +247,41 @@ public class PlayGame extends Activity {
     }
 
     public void onFoundItemDialog(final String name) {
-      
-          sendFoundItemToParse(name);
-          markFoundItem(name);
+                        sendFoundItemToParse(name);
+                        markFoundItem(name);
+                        currentScore++;
+                        final TextView scoreView = (TextView) findViewById(R.id.text_score);
+                        scoreView.setText(String.valueOf(currentScore));
+                   
+//                        checkGameFinish();
+                        checkIfWinner();
+     }
                          
-          currentScore++;
-          final TextView scoreView = (TextView) findViewById(R.id.text_score);
-          scoreView.setText(String.valueOf(currentScore));
-                         
-          checkSetGameFinish();
-      
+    private void checkIfWinner() {
+    	final JSONArray totalItems = game.getJSONArray("itemsList");
+        final ParseQuery<ParseObject> query = ParseQuery.getQuery("FoundItem");
+        query.whereEqualTo("game", game);
+        query.whereEqualTo("user", currentUser);
+        query.findInBackground(new FindCallback<ParseObject>() {
+            public void done(final List<ParseObject> foundItems, ParseException e) {
+                if (e == null) {
+                    if (currentScore == totalItems.length()) {                    	     		                 
+     		           launchWinnerDialogFragment();
+     		           setWinnerInfo();
+                    };
+                } else {
+                    Log.w("Parse Error", "player username retrieval failure");
+                }
+            }
+        });
     }
-
+    
+    private void launchWinnerDialogFragment() {
+    	final DialogFragment winnerDialogFragment = new WinnerDialogFragment();     		            
+         winnerDialogFragment.show(getFragmentManager(), "Winner");
+    }
+    
+    
     private void sendFoundItemToParse(final String name) {
         final ParseObject foundItem = new ParseObject("FoundItem");
         foundItem.put("game", game);
@@ -282,8 +305,7 @@ public class PlayGame extends Activity {
         adapter.notifyDataSetChanged();
     }
     
-    private void checkSetGameFinish() {
-        if (getItemListViewItems().size() == 0) {
+    private void setWinnerInfo() {
         	game.put("winner", currentUser);
             game.saveInBackground(new SaveCallback() {
                 public void done(ParseException e) {
@@ -296,8 +318,7 @@ public class PlayGame extends Activity {
                         Log.d("Play Game", "Error in saving winner: " + e);
                     }
                 }
-            });
-        }
+            });   
     }
     
 }

@@ -217,6 +217,7 @@ public final class R {
         public static final int splash_welcome=0x7f050003;
         public static final int title_activity_game_hub=0x7f05004a;
         public static final int title_activity_invited_game=0x7f05004b;
+        public static final int youWin=0x7f050052;
     }
     public static final class style {
         /** 
