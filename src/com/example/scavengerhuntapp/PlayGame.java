@@ -76,7 +76,7 @@ public class PlayGame extends Activity {
                     final TextView endDatetime = (TextView) findViewById(R.id.text_endDatetime);
                     gameName.setText(game.getString("name"));
                     endDatetime.setText(game.getDate("end_datetime").toString());
-
+                    
                     initializeItemListView();
 //                    getUserFoundItems();
                     setItemList(game); 
@@ -92,25 +92,28 @@ public class PlayGame extends Activity {
             android.R.layout.simple_list_item_1);
       final ListView itemListView = (ListView) findViewById(R.id.listview_remainingItems);
       itemListView.setAdapter(adapter);
-      itemListView
-       .setOnItemClickListener(new AdapterView.OnItemClickListener() {
-	        @Override
-	        public void onItemClick(AdapterView<?> parent,
-	                final View view, int position, long id) {
-	            Log.d("Dialog Values",
-	                    "Position is " + String.valueOf(position)
-	                            + ". View is " + view.toString()
-	                            + ". ID is " + String.valueOf(id));
-	            final String itemName = (String) parent
-	                    .getItemAtPosition(position);
-	            Bundle item = new Bundle();
-	            item.putString("name", itemName);
-	            final DialogFragment itemFoundDialogFragment = new ItemFoundDialogFragment();
-	            itemFoundDialogFragment.setArguments(item);
-	            itemFoundDialogFragment.show(getFragmentManager(), "itemFound");
-	
-	        }
-	    });
+      
+      final Date endDatetime = game.getDate("end_datetime");
+      if (new Date().before(endDatetime)) {   
+	      itemListView
+	       .setOnItemClickListener(new AdapterView.OnItemClickListener() {
+		        @Override
+		        public void onItemClick(AdapterView<?> parent,
+		                final View view, int position, long id) {
+		            Log.d("Dialog Values",
+		                    "Position is " + String.valueOf(position)
+		                            + ". View is " + view.toString()
+		                            + ". ID is " + String.valueOf(id));
+		            final String itemName = (String) parent
+		                    .getItemAtPosition(position);
+		            Bundle item = new Bundle();
+		            item.putString("name", itemName);
+		            final DialogFragment itemFoundDialogFragment = new ItemFoundDialogFragment();
+		            itemFoundDialogFragment.setArguments(item);
+		            itemFoundDialogFragment.show(getFragmentManager(), "itemFound");
+		        }
+	        });
+	    }
     }
     
     private void deleteAlreadyFoundItems() {
@@ -178,11 +181,7 @@ public class PlayGame extends Activity {
 	              JSONArray items = game.getJSONArray("itemsList");
 	              if (items != null) {
 	                final List<String> itemsList = new ArrayList<String>();
-//	                possible way to format....to test later
-//	                final SimpleDateFormat df = new SimpleDateFormat("EEE MMM");
-//	                itemsList.add("Game hasn't started yet. Come back on " + df.format(game.getDate("start_datetime").toString()) + ".");
-	                itemsList.add("Game hasn't started yet. Come back on " + game.getDate("start_datetime").toString() + ".");
-	                
+	                itemsList.add("Game hasn't started yet.");	                
 	                final ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, itemsList);
 	                final ListView listView = (ListView) findViewById(R.id.listview_remainingItems);
 	                listView.setAdapter(adapter);	                
