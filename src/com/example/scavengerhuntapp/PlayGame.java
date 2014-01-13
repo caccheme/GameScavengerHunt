@@ -1,6 +1,5 @@
 package com.example.scavengerhuntapp;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -12,7 +11,6 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -113,7 +111,28 @@ public class PlayGame extends Activity {
 		            itemFoundDialogFragment.show(getFragmentManager(), "itemFound");
 		        }
 	        });
-	    }
+      }
+	  if (new Date().after(endDatetime)) { //game over bc of time
+	      itemListView
+	       .setOnItemClickListener(new AdapterView.OnItemClickListener() {
+		        @Override
+		        public void onItemClick(AdapterView<?> parent,
+		                final View view, int position, long id) {
+		            Log.d("Dialog Values",
+		                    "Position is " + String.valueOf(position)
+		                            + ". View is " + view.toString()
+		                            + ". ID is " + String.valueOf(id));
+		            final String itemName = (String) parent
+		                    .getItemAtPosition(position);
+		            Bundle item = new Bundle();
+		            item.putString("name", itemName);
+		            final DialogFragment gameOverDialogFragment = new GameOverDialogFragment();
+		            gameOverDialogFragment.show(getFragmentManager(), "itemFound");
+		        }
+	        });	  
+	  
+	  }  
+	  
     }
     
     private void deleteAlreadyFoundItems() {
@@ -228,12 +247,16 @@ public class PlayGame extends Activity {
     }
 
     public void onFoundItemDialog(final String name) {
-                        sendFoundItemToParse(name);
-                        markFoundItem(name);
-                        currentScore++;
-                        final TextView scoreView = (TextView) findViewById(R.id.text_score);
-                        scoreView.setText(String.valueOf(currentScore));
-//  put logic here to check if game over/won?
+      
+          sendFoundItemToParse(name);
+          markFoundItem(name);
+                         
+          currentScore++;
+          final TextView scoreView = (TextView) findViewById(R.id.text_score);
+          scoreView.setText(String.valueOf(currentScore));
+                         
+          checkSetGameFinish();
+      
     }
 
     private void sendFoundItemToParse(final String name) {
@@ -257,6 +280,24 @@ public class PlayGame extends Activity {
         adapter.remove(item);
     	adapter.add((item + " \u2713"));
         adapter.notifyDataSetChanged();
+    }
+    
+    private void checkSetGameFinish() {
+        if (getItemListViewItems().size() == 0) {
+        	game.put("winner", currentUser);
+            game.saveInBackground(new SaveCallback() {
+                public void done(ParseException e) {
+                    if (e == null) {
+                        Log.d("Play Game",
+                                "Winner Saved to game named "
+                                        + game.getString("name") + "!");
+// send winner notification to other game players here b/c game won here by current user
+                    } else {
+                        Log.d("Play Game", "Error in saving winner: " + e);
+                    }
+                }
+            });
+        }
     }
     
 }

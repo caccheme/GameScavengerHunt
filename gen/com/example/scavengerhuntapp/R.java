@@ -120,6 +120,7 @@ public final class R {
     }
     public static final class string {
         public static final int action_settings=0x7f050001;
+        public static final int alreadyWon=0x7f050050;
         public static final int app_name=0x7f050000;
         public static final int button_addItem=0x7f050044;
         public static final int button_back=0x7f050037;
@@ -135,6 +136,7 @@ public final class R {
         public static final int dialog_found=0x7f05004e;
         public static final int editgamebutton_edititems=0x7f050041;
         public static final int editgamebutton_editplayers=0x7f050042;
+        public static final int gameTimedOut=0x7f050051;
         public static final int header_Currentgameslist=0x7f050049;
         public static final int header_gamelist=0x7f050038;
         /**  Game Items Manage 
