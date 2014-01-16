@@ -141,16 +141,18 @@ public class PlayGame extends Activity {
                    if (e == null) {
                 	   //set up empty table that loop will fill
                 	   final Map<String, Set<String>> finds = new HashMap<String, Set<String>>();
+                	   
                 	   for (final ParseObject foundItem : foundItems) {
                          final String username = foundItem.getParseObject("user").getString("username");
                          final String item = foundItem.getString("item");
                          addUser(finds, username);
                          addItem(finds, username, item);                                      
                          Log.d("Found Players", "players:" + username);
+                        
                        }
                 	   final int highscore = findHighScore(finds);
                 	   final List<String> winners = findWinners(finds, highscore);
-                        
+                	   
                 	   saveWinnersInfo(winners);
                 	   
 //  if use the winner names in the dialog box...
@@ -171,22 +173,26 @@ public class PlayGame extends Activity {
            });
    }
 
+   
    private void saveWinnersInfo(List<String> winners) {
+	   final ParseObject gamewinner = new ParseObject("GameWinners");
 	   for (int i=0;i < winners.size();i++) {
-   	     game.put("winner", winners.get(i));
-         game.saveInBackground(new SaveCallback() {
+		 gamewinner.put("winnername", winners.get(i));
+		 gamewinner.put("game", game);
+         gamewinner.saveInBackground(new SaveCallback() {
            public void done(ParseException e) {
                if (e == null) {
                    Log.d("Play Game",
                            "Winner Saved to game named "
-                                   + game.getString("name") + "!");
-//send winner notification to other game players here b/c game won 
+                                   + gamewinner.getString("winnername") + "!");
+//send winner notification to other game players here b/c game won here by current user
                } else {
                    Log.d("Play Game", "Error in saving winner: " + e);
                }
            }
-       });
+       });   
 	 }
+   
    }
    
   private int findHighScore(final Map<String, Set<String>> finds) {
@@ -333,8 +339,8 @@ public class PlayGame extends Activity {
     }
     
     public void onFoundItemDialog(final String name) {
-        final ParseQuery<ParseObject> query = ParseQuery.getQuery("Game");
-        query.whereExists("winner");
+        final ParseQuery<ParseObject> query = ParseQuery.getQuery("GameWinner");
+        query.whereEqualTo("game", game);
         query.getInBackground(game.getObjectId(), new GetCallback<ParseObject>() {
             public void done(ParseObject currentGame, ParseException e) {
                 if (e == null) {
@@ -411,19 +417,21 @@ public class PlayGame extends Activity {
     }
     
     private void setWinnerInfo() {
-        	game.put("winner", currentUser);
-            game.saveInBackground(new SaveCallback() {
-                public void done(ParseException e) {
-                    if (e == null) {
-                        Log.d("Play Game",
-                                "Winner Saved to game named "
-                                        + game.getString("name") + "!");
-// send winner notification to other game players here b/c game won here by current user
-                    } else {
-                        Log.d("Play Game", "Error in saving winner: " + e);
-                    }
+    	final ParseObject gamewinner = new ParseObject("GameWinner");
+ 		  gamewinner.put("winnername", currentUser.getString("username"));
+ 		  gamewinner.put("game", game);
+          gamewinner.saveInBackground(new SaveCallback() {
+            public void done(ParseException e) {
+                if (e == null) {
+                    Log.d("Play Game",
+                            "Winner Saved to game named "
+                                    + currentUser.getString("username") + "!");
+ //send winner notification to other game players here b/c game won here by current user
+                } else {
+                    Log.d("Play Game", "Error in saving winner: " + e);
                 }
-            });   
+            }
+        });
     }
         
 }
