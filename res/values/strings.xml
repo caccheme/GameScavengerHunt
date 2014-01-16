@@ -105,4 +105,5 @@
     <string name="alreadyWon">Sorry, another player just won. Thanks for playing!</string>
     <string name="gameTimedOut">This game has timed out.</string>
     <string name="youWin">Congratulations! You Win!</string>
+    <string name="noInvitedGames">Sorry. You haven\'t been invited to any games yet.</string>
 </resources>

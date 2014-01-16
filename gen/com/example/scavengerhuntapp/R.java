@@ -203,6 +203,7 @@ public final class R {
         public static final int label_startDatetime=0x7f05002b;
         public static final int label_username=0x7f05000e;
         public static final int mygameslistButton_menu=0x7f05003d;
+        public static final int noInvitedGames=0x7f050053;
         /**  Menu Options 
          */
         public static final int option_menu_about=0x7f050009;

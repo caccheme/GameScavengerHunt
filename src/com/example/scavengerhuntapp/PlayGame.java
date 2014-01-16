@@ -424,7 +424,7 @@ public class PlayGame extends Activity {
             public void done(ParseException e) {
                 if (e == null) {
                     Log.d("Play Game",
-                            "Winner Saved to game named "
+                            "Winner Saved : "
                                     + currentUser.getString("username") + "!");
  //send winner notification to other game players here b/c game won here by current user
                 } else {

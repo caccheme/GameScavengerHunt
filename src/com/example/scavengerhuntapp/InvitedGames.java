@@ -1,10 +1,10 @@
 package com.example.scavengerhuntapp;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -78,14 +78,18 @@ public class InvitedGames extends Activity {
 				          public void done(List<ParseObject> games, ParseException e) {
 				              if (e == null) {
 				                  for (ParseObject game : games) {
+				                	  if (games != null){
 				                      Log.d("Parse GameName",
 				                              "Retrieved Game Named: " + game.getString("name"));
-//				                      Date startDatetime = game.getDate("start_datetime");
-//				                      if (new Date().after(startDatetime)) {
 				                    	  currentGames.add(game);
 				                    	  addToListView(game, getCurrentGamesAdapter());
-//				                        }			                  
-				                          
+				                	  }
+				                	  if (games == null){
+				                		  Log.d("Parse GameName",
+					                              "Has been invited to no games");
+				                		final DialogFragment noInvitedGamesDialogFragment = new NoInvitedGamesDialogFragment();
+				      		            noInvitedGamesDialogFragment.show(getFragmentManager(), "No Invited Games");
+				                	  }
 				                  }
 				              } else {
 				                  Log.w("Parse Error", "game name retreival failure");
