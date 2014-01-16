@@ -95,44 +95,56 @@
         android:inputType="time" 
         android:onClick="showEndTimePickerDialog"/>
 
-    <Button
-        android:id="@+id/newGameButton_cancel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+
+
+    
+   <View
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dp"
+        android:layout_alignTop="@+id/button_editplayers"
         android:layout_alignParentLeft="true"
-        android:gravity="center"
-        android:text="@string/label_mygames"
-        android:textSize="16sp"
-        android:textStyle="normal" />
+        android:background="@android:color/darker_gray" />
 
     <Button
-        android:id="@+id/button_editplayers"
+        android:id="@+id/button_edititems"
+        style="?android:attr/buttonBarButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/button_edititems"
-        android:layout_alignBottom="@+id/button_edititems"
-        android:layout_alignLeft="@+id/button_update"
-        android:text="@string/editgamebutton_editplayers" />
+        android:layout_above="@+id/newGameButton_cancel"
+        android:layout_alignParentRight="true"
+        android:text="@string/editgamebutton_edititems" />
 
     <Button
         android:id="@+id/button_update"
+        style="?android:attr/buttonBarButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/editEndDate"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/editEndTime"
         android:gravity="center"
         android:text="@string/label_editgamenametime"
         android:textSize="16sp"
         android:textStyle="normal" />
 
     <Button
-        android:id="@+id/button_edititems"
+        android:id="@+id/newGameButton_cancel"
+        style="?android:attr/buttonBarButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/newGameButton_cancel"
-        android:layout_toRightOf="@+id/button_editplayers"
-        android:text="@string/editgamebutton_edititems" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:gravity="center"
+        android:text="Back to Games List"
+        android:textSize="16sp"
+        android:textStyle="normal" />
 
+    <Button
+        android:id="@+id/button_editplayers"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button_edititems"
+        android:layout_alignParentRight="true"
+        android:text="@string/editgamebutton_editplayers" />
 
 </RelativeLayout>

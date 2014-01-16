@@ -87,8 +87,8 @@ public class InvitedGames extends Activity {
 				                	  if (games == null){
 				                		  Log.d("Parse GameName",
 					                              "Has been invited to no games");
-				                		final DialogFragment noInvitedGamesDialogFragment = new NoInvitedGamesDialogFragment();
-				      		            noInvitedGamesDialogFragment.show(getFragmentManager(), "No Invited Games");
+				                		  launchNoInvitedGamesDialogFragment();
+				                	
 				                	  }
 				                  }
 				              } else {
@@ -100,6 +100,11 @@ public class InvitedGames extends Activity {
       });
     }
 
+    private void launchNoInvitedGamesDialogFragment() {
+    	final DialogFragment noInvitedGamesDialogFragment = new NoInvitedGamesDialogFragment();
+          noInvitedGamesDialogFragment.show(getFragmentManager(), "No Invited Games");
+    }
+    
     private void addToListView(ParseObject game, ArrayAdapter<String> adapter) {
         adapter.add(game.getString("name"));
         adapter.notifyDataSetChanged();
