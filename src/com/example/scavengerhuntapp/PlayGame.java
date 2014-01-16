@@ -3,8 +3,10 @@ package com.example.scavengerhuntapp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.json.JSONArray;
 
@@ -88,9 +90,6 @@ public class PlayGame extends Activity {
             }
         });
     }
-
-    
-        
     
     private void initializeItemListView() {
       final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
@@ -120,8 +119,7 @@ public class PlayGame extends Activity {
 	        });
       }
 	  if (new Date().after(endDatetime)) { //game over bc of time
-//	      do the check of scores for all players of this game here
-		  getWinner();
+          determineWinnerNames();          
 		  itemListView
 	       .setOnItemClickListener(new AdapterView.OnItemClickListener() {
 		        @Override
@@ -134,146 +132,95 @@ public class PlayGame extends Activity {
 	    } 
     }
     
-//    create userId array...beginning of tie game logic for when game time runs out
-    private void getWinner() {
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("GamePlayer");
-        Bundle extras = getIntent().getExtras();
-        final String GameId = extras.getString("GameId");
-        query.whereEqualTo("game", GameId);
-        query.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> playerList, ParseException e) {
-                if (e == null) {
-                    final String[] playerIdArray = new String[playerList.size()];
-                    for (int i = 0; i < playerList.size(); i++) {
-                        Log.d("data", "Retrieved User: "
-                                + playerList.get(i).getParseObject("user").getObjectId());
-                        playerIdArray[i] = playerList.get(i).getString("objectId");
-                        getPlayerScore(playerList);
-// some check for biggest score and then save to 'winner'
-                        game.put("winner", playerList.get(i).getParseObject("user")); //user instead of currentUser
-                        game.saveInBackground(new SaveCallback() {
-                            public void done(ParseException e) {
-                                if (e == null) {
-                                    Log.d("Play Game",
-                                            "Winner saved to game "
-                                                    + game.getString("name") + "!");
-                 //send winner notification to other game players here b/c game won here by most found
-                                } else {
-                                    Log.d("Play Game", "Error in saving winner: " + e);
-                                }
-                            }
-                        });
-
-                    }
-                } else {
-                    Log.w("Parse Error", "game retreival failure");
-                }
-            }
-        });
-                  
-       
-   }
-  
-   private void getPlayerScore(List<ParseObject> userList) { //pass parameter userId to check each player's score?
-//       final JSONArray totalItems = game.getJSONArray("itemsList");
-       for (int i = 0; i < userList.size(); i++) {
+   private void determineWinnerNames() {
            final ParseQuery<ParseObject> query = ParseQuery.getQuery("FoundItem");
            query.whereEqualTo("game", game);
-           query.whereEqualTo("user", userList.get(i).getString("objectId")); //event for this player
            query.include("user");
            query.findInBackground(new FindCallback<ParseObject>() {
                public void done(final List<ParseObject> foundItems, ParseException e) {
                    if (e == null) {
-                       for (final ParseObject foundItem : foundItems) {
-//                            map data so can group by user and then count items
-//                             totalItems.length();                                                      
-                             final String username = foundItem.getParseObject("user").getString("username");
-                           final String item = foundItem.getString("item");
-                           final Map<String, List<String>> finds = new HashMap<String, List<String>>();
-                            
-//                           need to add User for each different user
-                           addUser(finds, username);
-                           addItem(finds, username, item);
-                           getScores(finds).size();  //.size(); = number of events total...need to do this query for each player and compare these            
-                           Log.d("Found Scores", "scores:" +
-                             getScores(finds).size() + " for user: " + username);
-
-                          	
-//                         findHighScores(getScores(finds));
+                	   //set up empty table that loop will fill
+                	   final Map<String, Set<String>> finds = new HashMap<String, Set<String>>();
+                	   for (final ParseObject foundItem : foundItems) {
+                         final String username = foundItem.getParseObject("user").getString("username");
+                         final String item = foundItem.getString("item");
+                         addUser(finds, username);
+                         addItem(finds, username, item);                                      
+                         Log.d("Found Players", "players:" + username);
                        }
-                      
+                	   final int highscore = findHighScore(finds);
+                	   final List<String> winners = findWinners(finds, highscore);
+                        
+                	   saveWinnersInfo(winners);
+                	   
+//  if use the winner names in the dialog box...
+//	   		           Bundle winnernames = new Bundle();
+//	   		           winnernames.putInt("ListSize", winners.size());//so in dialog I know how many names to loop over
+//	   		           for (int i=0;i < winners.size();i++) {
+//	   		        	   winnernames.putString("name" + i, winners.get(i));
+//	   		        	}
+//	   		           
+//	   		           final DialogFragment gameOverDialogFragment = new GameOverDialogFragment();
+//	   		           gameOverDialogFragment.setArguments(winnernames);  //now to do dialog code and use "name + 1" etc in loop to say who won and why game over...look at item dialog for how to
+//	   		           gameOverDialogFragment.show(getFragmentManager(), "Game Over");
+	                	      
                    } else {
                        Log.w("Parse Error", "player username retrieval failure");
-                   }
+                   }     
+               }          
+           });
+   }
+
+   private void saveWinnersInfo(List<String> winners) {
+	   for (int i=0;i < winners.size();i++) {
+   	     game.put("winner", winners.get(i));
+         game.saveInBackground(new SaveCallback() {
+           public void done(ParseException e) {
+               if (e == null) {
+                   Log.d("Play Game",
+                           "Winner Saved to game named "
+                                   + game.getString("name") + "!");
+//send winner notification to other game players here b/c game won 
+               } else {
+                   Log.d("Play Game", "Error in saving winner: " + e);
                }
-           });   
-       }
+           }
+       });
+	 }
    }
    
-//    private void findHighScores(List<Integer> scores) {
-//    	final List<Integer> largest = null;
-//    	final Integer max = 0;
-//    	  for (final int score : scores ) {
-//    	   	for(int i =0; i < scores.size(); i++) {
-//    	      if(scores.get(i) > largest.get(i)) {
-//    	        max = max + 1 ;
-//    	      }
-//    	    }
-//          }
-//    }
+  private int findHighScore(final Map<String, Set<String>> finds) {
+	 int highscore = 0 ;
+	 for(Map.Entry<String, Set<String>> entry : finds.entrySet()) {
+	    if (entry.getValue().size() > highscore ) {
+	    	highscore = entry.getValue().size();
+	    }
+	 }
+	 return highscore ;
+   }
 
-// private void findHighScorer(final Map<String, List<String>> finds, final String username, final String item) {
-//	final Entry<String, List<String>> maxEntry = null;
-//
-//	for(Entry<String,Integer> entry : finds.entrySet()) {
-//	    if (maxEntry == null || entry.getValue() > maxEntry.getValue()) {
-//	        maxEntry = entry;
-//	    }
-//	}
-//
-//	for (Map.Entry<String, String> entry : map.entrySet())
-//	{
-//	    System.out.println(entry.getKey() + "/" + entry.getValue());
-//	}
-//
-////	Map<Integer, String> map = ...
-//
-//	Iterator<Map.Entry<Integer, String>> it = map.entrySet().iterator();
-//
-//	while (it.hasNext()) {
-//	  Map.Entry<Integer, String> entry = it.next();
-//
-//	  // Remove entry if key is null or equals 0.
-//	  if (entry.getKey() == null || entry.getKey() == 0) {
-//	    it.remove();
-//	  }
-//	}
-//	
-//	// maxEntry should now contain the maximum,
-//}
+   private List<String> findWinners(final Map<String, Set<String>> finds, final int highscore) {
+	 final List<String> winners = new ArrayList<String>() ; 
+     if (highscore != 0){
+     	 for(Map.Entry<String, Set<String>> entry : finds.entrySet()) {
+   		    if (entry.getValue().size() == highscore ) {
+   		    	 winners.add(entry.getKey()); //put this key (the username) into the winners list
+   		    }	 
+	     }
+	 } 
+	 return winners;
+   }
    
-    private List<Integer> getScores(final Map<String, List<String>> finds) {
-        final List<Integer> scores = new ArrayList<Integer>();
-        for (final Map.Entry<String, List<String>> entry : finds.entrySet()) {
-            scores.add(entry.getValue().size());
+    private void addUser(final Map<String, Set<String>> finds, final String name) {
+        if (finds.get(name) == null) { 
+    	  finds.put(name, new HashSet<String>());
         }
-        return scores;
     }
    
-    private void addUser(final Map<String, List<String>> finds, final String name) {
-        finds.put(name, new ArrayList<String>());
-    }
-   
-    private void addItem(final Map<String, List<String>> finds, final String username, final String item) {
-        finds.get(username).add(item);
-        addUser(finds, username);
+    private void addItem(final Map<String, Set<String>> finds, final String username, final String item) {
+    	finds.get(username).add(item);
     }
 
- 
-    // end of time running out and look for winner tie game logic
-    
-    
     private void deleteAlreadyFoundItems() {
         final ParseQuery<ParseObject> query = ParseQuery.getQuery("FoundItem");
         query.whereEqualTo("game", game);
@@ -398,7 +345,7 @@ public class PlayGame extends Activity {
                         final TextView scoreView = (TextView) findViewById(R.id.text_score);
                         scoreView.setText(String.valueOf(currentScore));
                    
-                        checkIfWinner();
+                        checkIfWinner(); //do this inside  callback of sendfounditem
                     }
                     else{
                     	launchGameAlreadyWonDialogFragment();
@@ -419,7 +366,7 @@ public class PlayGame extends Activity {
         query.findInBackground(new FindCallback<ParseObject>() {
             public void done(final List<ParseObject> foundItems, ParseException e) {
                 if (e == null) {
-                    if (currentScore == totalItems.length()) {                    	     		                 
+                    if (foundItems.size() == totalItems.length()) {  //instead of currentscore comparison                  	     		                 
      		           launchWinnerDialogFragment();
      		           setWinnerInfo();
                     };
