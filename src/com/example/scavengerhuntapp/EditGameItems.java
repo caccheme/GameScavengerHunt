@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -42,26 +43,51 @@ public class EditGameItems extends Activity {
           @Override
           public void done(ParseObject game, ParseException e) {
             if (e == null) {
-              JSONArray items = game.getJSONArray("itemsList"); 
+              final JSONArray items = game.getJSONArray("itemsList"); 
               if (items != null) {        
-                final List<String> itemsList = new ArrayList<String>();
-                for(int i = 0; i < items.length(); i++){
+                List<String> firstItemsList = new ArrayList<String>();
+                final int length = items.length() ;
+                
+                for(int i = 0; i < length; i++){
                   try{             
-                    itemsList.add(items.getString(i));
+                    firstItemsList.add(items.getString(i));
                   }
                   catch (Exception exc) {
                     Log.d("ScavengerHuntApp", "JSONObject exception: " + Log.getStackTraceString(exc));
                   }
                 }
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, itemsList); 
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, firstItemsList); 
                 ListView listView = (ListView) findViewById(R.id.listview_items);
-                listView.setAdapter(adapter);  
+                listView.setAdapter(adapter);
+
+ //  delete item from JSON Array ItemsList when clicked....still thinking on this and will finish with more time (1/17/14)                
+//                final List<String> list = firstItemsList ; //new ArrayList<String>();
+//                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                	public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
+//                	  final String item = (String) parent.getItemAtPosition(position);
+//                	    for(int i = 0; i < length; i++){
+//                            try{
+//	                             list.remove(items.getString(i));
+//	                    	     list.remove(item);
+//	                    
+//                            }
+//                            catch (Exception exc) {
+//                            	Log.d("ScavengerHuntApp", "JSONObject exception: " + Log.getStackTraceString(exc));
+//                            }
+//                         }
+//                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, list); 
+//                        ListView listView = (ListView) findViewById(R.id.listview_items);
+//                        listView.setAdapter(adapter);
+////                	    final ArrayAdapter<String> adapter = getItemAdapter();
+//                	    adapter.remove(item);
+//                        adapter.notifyDataSetChanged();
+//                	 }
+//                  });
               }
-            }
-            else {
-              CharSequence text = "There was a problem. Please hold.";
-              int duration = Toast.LENGTH_SHORT;                     
-              Toast.makeText(context, text, duration).show();
+              
+            } else {
+              Toast.makeText(context, 
+            		  "There was a problem.", Toast.LENGTH_SHORT).show();
               startActivity(getIntent());
               finish();
             }
