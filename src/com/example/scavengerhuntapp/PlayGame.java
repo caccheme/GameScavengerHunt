@@ -115,7 +115,7 @@ public class PlayGame extends Activity {
 	        });
       }
 	  if (new Date().after(endDatetime)) { //game over bc of time
-          determineWinnerNames();          
+		  determineWinnerNames();          
 		  itemListView
 	       .setOnItemClickListener(new AdapterView.OnItemClickListener() {
 		        @Override
@@ -124,8 +124,8 @@ public class PlayGame extends Activity {
 		            final DialogFragment gameOverDialogFragment = new GameOverDialogFragment();
 		            gameOverDialogFragment.show(getFragmentManager(), "Game Over");
 		        }
-	        });	 
-	    } 
+	      });	 
+	   } 
     }
     
    private void determineWinnerNames() {
@@ -158,11 +158,15 @@ public class PlayGame extends Activity {
 
 
    private void saveWinnersInfo(List<String> winners) {
-	   final ParseObject gamewinner = new ParseObject("GameWinners");
+	   final List<ParseObject> newWinnersList = new ArrayList<ParseObject>();
+	   final ParseObject gamewinner = new ParseObject("GameWinner");
 	   for (int i=0;i < winners.size();i++) {
-		 gamewinner.put("winner", winners.get(i)); //username saved
+		 gamewinner.put("winner", winners.get(i)); 
 		 gamewinner.put("game", game);
-         gamewinner.saveInBackground(new SaveCallback() {
+		 newWinnersList.add(gamewinner);
+	   }
+	   
+	   ParseObject.saveAllInBackground(newWinnersList, new SaveCallback() {
            public void done(ParseException e) {
                if (e == null) {
                    Log.d("Play Game",
@@ -176,7 +180,6 @@ public class PlayGame extends Activity {
        });   
 	 }
    
-   }
    
   private int findHighScore(final Map<String, Set<String>> finds) {
 	 int highscore = 0 ;
@@ -210,7 +213,7 @@ public class PlayGame extends Activity {
     	finds.get(username).add(item);
     }
 
-    private void deleteAlreadyFoundItems() {
+    private void markAlreadyFoundItems() {
         final ParseQuery<ParseObject> query = ParseQuery.getQuery("FoundItem");
         query.whereEqualTo("game", game);
         query.whereEqualTo("user", currentUser);
@@ -267,7 +270,7 @@ public class PlayGame extends Activity {
 	                listView.setAdapter(adapter);
 	                
 	                setScore(game.getJSONArray("itemsList"));
-	                deleteAlreadyFoundItems();
+	                markAlreadyFoundItems();
 	             }  
               }
               
@@ -345,39 +348,34 @@ public class PlayGame extends Activity {
     
     private void checkIfWinner() {
     	final JSONArray totalItems = game.getJSONArray("itemsList");
-	   final ParseQuery<ParseObject> query = ParseQuery.getQuery("FoundItem");
-       query.whereEqualTo("game", game);
-       query.include("user");
-       query.findInBackground(new FindCallback<ParseObject>() {
-           public void done(final List<ParseObject> foundItems, ParseException e) {
-               if (e == null) {
-            	   //set up empty table that loop will fill
-            	   final Map<String, Set<String>> finds = new HashMap<String, Set<String>>();
-            	   
-            	   for (final ParseObject foundItem : foundItems) {
-                     final String username = foundItem.getParseObject("user").getString("username");
-                     final String item = foundItem.getString("item");
-                     addUser(finds, username);
-                     addItem(finds, username, item);                                      
-                     Log.d("Found Players", "players:" + username);
-                        
-                       }
-                	   final int highscore = findHighScore(finds);
-                       if (currentScore == totalItems.length()) {  //currentScore is for currentUser                   	     		                 
-         		           launchWinnerDialogFragment();
-         		           setWinnerInfo();
-                        };
-                	   
-                        if (highscore == totalItems.length()){ //should announce if someone else has won...too slow so is not working here
-                		   launchGameAlreadyWonDialogFragment();        		   
-                	    };
-                   } else {
-                       Log.w("Parse Error", "player username retrieval failure");
-               }     
-           }          
-       });
-    	
-    }
+    	final ParseQuery<ParseObject> query = ParseQuery.getQuery("FoundItem");
+    	query.whereEqualTo("game", game);
+    	query.include("user");
+    	query.findInBackground(new FindCallback<ParseObject>() {
+    		public void done(final List<ParseObject> foundItems, ParseException e) {
+    			if (e == null) {
+    				final Map<String, Set<String>> finds = new HashMap<String, Set<String>>();
+    				for (final ParseObject foundItem : foundItems) {
+    					final String username = foundItem.getParseObject("user").getString("username");
+    					final String item = foundItem.getString("item");
+    					addUser(finds, username);
+    					addItem(finds, username, item);
+    					Log.d("Found Players", "players:" + username);
+    					}
+    				final int highscore = findHighScore(finds);
+    				if (currentScore == totalItems.length()) {  //currentScore is for currentUser
+    					launchWinnerDialogFragment();
+    					setWinnerInfo();
+    					}
+    				if (highscore == totalItems.length()){ //should announce if someone else has won...too slow so is not working here
+    					launchGameAlreadyWonDialogFragment();
+    					}
+    			} else {
+    				Log.w("Parse Error", "player username retrieval failure");
+    				}
+    			}
+    		});
+    	}
     
     private void launchWinnerDialogFragment() {
     	final DialogFragment winnerDialogFragment = new WinnerDialogFragment();     		            
