@@ -100,7 +100,7 @@ public class EditGameNameTime extends Activity {
 
     private void doUpdateGame() {
         Bundle extras = getIntent().getExtras();
-        final String gameId = extras.getString("gameId");
+        final String gameId = extras.getString("GameId");
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Game");
         query.getInBackground(gameId, new GetCallback<ParseObject>() {
             public void done(final ParseObject game, ParseException e) {
