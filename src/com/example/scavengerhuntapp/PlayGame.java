@@ -51,12 +51,6 @@ public class PlayGame extends Activity {
         setupButtonCallbacks(gameId);
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.game_hub, menu);
-//        return true;
-//    }
-    
     private void setupButtonCallbacks(final String GameId) {
         final Button menuButton = (Button) findViewById(R.id.button_back);
         menuButton.setOnClickListener(new OnClickListener() {
@@ -152,20 +146,7 @@ public class PlayGame extends Activity {
                        }
                 	   final int highscore = findHighScore(finds);
                 	   final List<String> winners = findWinners(finds, highscore);
-                	   
                 	   saveWinnersInfo(winners);
-                	   
-//  if use the winner names in the dialog box...
-//	   		           Bundle winnernames = new Bundle();
-//	   		           winnernames.putInt("ListSize", winners.size());//so in dialog I know how many names to loop over
-//	   		           for (int i=0;i < winners.size();i++) {
-//	   		        	   winnernames.putString("name" + i, winners.get(i));
-//	   		        	}
-//	   		           
-//	   		           final DialogFragment gameOverDialogFragment = new GameOverDialogFragment();
-//	   		           gameOverDialogFragment.setArguments(winnernames);  //now to do dialog code and use "name + 1" etc in loop to say who won and why game over...look at item dialog for how to
-//	   		           gameOverDialogFragment.show(getFragmentManager(), "Game Over");
-	                	      
                    } else {
                        Log.w("Parse Error", "player username retrieval failure");
                    }     
@@ -173,18 +154,18 @@ public class PlayGame extends Activity {
            });
    }
 
-   
+
    private void saveWinnersInfo(List<String> winners) {
 	   final ParseObject gamewinner = new ParseObject("GameWinners");
 	   for (int i=0;i < winners.size();i++) {
-		 gamewinner.put("winnername", winners.get(i));
+		 gamewinner.put("winner", winners.get(i)); //username saved
 		 gamewinner.put("game", game);
          gamewinner.saveInBackground(new SaveCallback() {
            public void done(ParseException e) {
                if (e == null) {
                    Log.d("Play Game",
                            "Winner Saved to game named "
-                                   + gamewinner.getString("winnername") + "!");
+                                   + game.getString("name") + "!");
 //send winner notification to other game players here b/c game won here by current user
                } else {
                    Log.d("Play Game", "Error in saving winner: " + e);
@@ -339,48 +320,61 @@ public class PlayGame extends Activity {
     }
     
     public void onFoundItemDialog(final String name) {
-        final ParseQuery<ParseObject> query = ParseQuery.getQuery("GameWinner");
-        query.whereEqualTo("game", game);
-        query.getInBackground(game.getObjectId(), new GetCallback<ParseObject>() {
-            public void done(ParseObject currentGame, ParseException e) {
-                if (e == null) {
-                    if(currentGame == null){
-                    	sendFoundItemToParse(name);
-                        markFoundItem(name);
+            sendFoundItemToParse(name);
+            final ParseQuery<ParseObject> query = ParseQuery.getQuery("FoundItem");
+            query.whereEqualTo("game", game);
+            query.whereEqualTo("user", currentUser);
+            query.findInBackground(new FindCallback<ParseObject>() {
+                public void done(final List<ParseObject> foundItems, ParseException e) {
+                    if (e == null) {
+                    	markFoundItem(name);
                         currentScore++;
                         final TextView scoreView = (TextView) findViewById(R.id.text_score);
-                        scoreView.setText(String.valueOf(currentScore));
-                   
-                        checkIfWinner(); //do this inside  callback of sendfounditem
+                        scoreView.setText(String.valueOf(currentScore));       
+                        checkIfWinner();
                     }
-                    else{
-                    	launchGameAlreadyWonDialogFragment();
+                    else {
+                         Log.w("Parse Error", "foundItem not retrieved");
                     }
-                } else {
-                    Log.w("error", "game retrieval error");
                 }
-            }
-
-        });
+            });
     }
-                         
+                
+    
     private void checkIfWinner() {
     	final JSONArray totalItems = game.getJSONArray("itemsList");
-        final ParseQuery<ParseObject> query = ParseQuery.getQuery("FoundItem");
-        query.whereEqualTo("game", game);
-        query.whereEqualTo("user", currentUser);
-        query.findInBackground(new FindCallback<ParseObject>() {
-            public void done(final List<ParseObject> foundItems, ParseException e) {
-                if (e == null) {
-                    if (foundItems.size() == totalItems.length()) {  //instead of currentscore comparison                  	     		                 
-     		           launchWinnerDialogFragment();
-     		           setWinnerInfo();
-                    };
-                } else {
-                    Log.w("Parse Error", "player username retrieval failure");
-                }
-            }
-        });
+	   final ParseQuery<ParseObject> query = ParseQuery.getQuery("FoundItem");
+       query.whereEqualTo("game", game);
+       query.include("user");
+       query.findInBackground(new FindCallback<ParseObject>() {
+           public void done(final List<ParseObject> foundItems, ParseException e) {
+               if (e == null) {
+            	   //set up empty table that loop will fill
+            	   final Map<String, Set<String>> finds = new HashMap<String, Set<String>>();
+            	   
+            	   for (final ParseObject foundItem : foundItems) {
+                     final String username = foundItem.getParseObject("user").getString("username");
+                     final String item = foundItem.getString("item");
+                     addUser(finds, username);
+                     addItem(finds, username, item);                                      
+                     Log.d("Found Players", "players:" + username);
+                        
+                       }
+                	   final int highscore = findHighScore(finds);
+                       if (currentScore == totalItems.length()) {  //currentScore is for currentUser                   	     		                 
+         		           launchWinnerDialogFragment();
+         		           setWinnerInfo();
+                        };
+                	   
+                        if (highscore == totalItems.length()){ //should announce if someone else has won...too slow so is not working here
+                		   launchGameAlreadyWonDialogFragment();        		   
+                	    };
+                   } else {
+                       Log.w("Parse Error", "player username retrieval failure");
+               }     
+           }          
+       });
+    	
     }
     
     private void launchWinnerDialogFragment() {
@@ -417,11 +411,11 @@ public class PlayGame extends Activity {
     }
     
     private void setWinnerInfo() {
-    	final ParseObject gamewinner = new ParseObject("GameWinner");
- 		  gamewinner.put("winnername", currentUser.getString("username"));
- 		  gamewinner.put("game", game);
+    	 final ParseObject gamewinner = new ParseObject("GameWinner");
+    	  gamewinner.put("game", game);
+ 		  gamewinner.put("winner", currentUser.getString("username"));
           gamewinner.saveInBackground(new SaveCallback() {
-            public void done(ParseException e) {
+             public void done(ParseException e) {
                 if (e == null) {
                     Log.d("Play Game",
                             "Winner Saved : "

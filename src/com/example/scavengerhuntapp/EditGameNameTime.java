@@ -83,8 +83,19 @@ public class EditGameNameTime extends Activity {
             EditGameNameTime.this.startActivity(b);
             finish();
           } 
-        });   
-
+        });
+        final Button backButton = (Button) findViewById(R.id.newGameButton_cancel); 
+        backButton.setOnClickListener(new OnClickListener() {
+          @Override
+          public void onClick(View v) {
+            final Intent i = getIntent();
+            final String GameId = i.getStringExtra("GameId");
+            Intent b = new Intent(EditGameNameTime.this, MainMenuActivity.class);
+            b.putExtra("GameId", GameId);
+            EditGameNameTime.this.startActivity(b);
+            finish();
+          } 
+        });
     }
 
     private void doUpdateGame() {

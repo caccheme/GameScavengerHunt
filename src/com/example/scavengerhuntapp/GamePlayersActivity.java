@@ -86,8 +86,14 @@ public class GamePlayersActivity extends Activity {
                  if (e == null) {
                    Log.d("Game Creation", "Game Created!");
                    saveGamePlayers(getSelectedPlayerList());
-                   GamePlayersActivity.this.startActivity(new Intent(GamePlayersActivity.this, MyGamesList.class));
+                   final Intent i = getIntent();
+                   final String GameId = i.getStringExtra("GameId");
+                   Intent b = new Intent(GamePlayersActivity.this, ViewGame.class);
+                   b.putExtra("GameId", GameId);
+                   GamePlayersActivity.this.startActivity(b);
                    finish();
+//                   GamePlayersActivity.this.startActivity(new Intent(GamePlayersActivity.this, ViewGame.class));
+//                   finish();
                  } else {
                    Log.d("Game Creation", "Error creating game: " + e);
                  }

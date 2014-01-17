@@ -134,7 +134,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:gravity="center"
-        android:text="Back to Games List"
+        android:text="Main Menu"
         android:textSize="16sp"
         android:textStyle="normal" />
 
