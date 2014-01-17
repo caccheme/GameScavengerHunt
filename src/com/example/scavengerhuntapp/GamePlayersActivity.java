@@ -150,18 +150,17 @@ public class GamePlayersActivity extends Activity {
 
    private void sendPushInvitation(ParseObject game, ParseUser currentUser) {
 	   for (ParseUser player : getSelectedPlayerList()) {
-       ParseQuery<ParseInstallation> pushQuery = ParseInstallation
-            .getQuery();
-               pushQuery.whereEqualTo("owner", player);
-               Log.d("push player", player.getString("username"));
-               ParsePush push = new ParsePush();
-               push.setQuery(pushQuery);
-               push.setMessage("You've been invited to play in the game "
+		   ParseQuery<ParseInstallation> pushQuery = ParseInstallation
+				   .getQuery();
+		   pushQuery.whereEqualTo("owner", player);
+		   Log.d("push player", player.getString("username"));
+		   ParsePush push = new ParsePush();
+		   push.setQuery(pushQuery);
+		   push.setMessage("You've been invited to play in the game "
                        + game.getString("name") + " by "
-                       + currentUser.getString("username") + ".");               
-               push.sendInBackground();
-           }
-       }
-
+                       + currentUser.getString("username") + ".");
+		   push.sendInBackground();
+		   }
+	   }
    
 }

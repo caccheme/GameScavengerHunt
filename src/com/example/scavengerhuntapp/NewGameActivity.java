@@ -31,14 +31,14 @@ public class NewGameActivity extends Activity {
 	final Button createGameButton = (Button) findViewById(R.id.newGameButton_continue);
     createGameButton.setOnClickListener(new OnClickListener() {
         @Override
-        public void onClick(View v) {
+        final public void onClick(View v) {
           doCreateGame();
         } 
     } );
     final Button cancelButton = (Button) findViewById(R.id.newGameButton_cancel); 
     cancelButton.setOnClickListener(new OnClickListener() {
       @Override
-      public void onClick(View v) {
+      final public void onClick(View v) {
         NewGameActivity.this.startActivity(new Intent(NewGameActivity.this, MainMenuActivity.class));
         finish();
       }
@@ -54,18 +54,18 @@ public class NewGameActivity extends Activity {
       game.put("end_datetime", getDateTime(R.id.editEndDate, R.id.editEndTime));
       game.saveInBackground(new SaveCallback() {
 		@Override
-		public void done(com.parse.ParseException e) {
+		final public void done(com.parse.ParseException e) {
             if (e == null) {
-                Log.d("Game Creation", "Game Name/Times Created!");
-                final String GameId = game.getObjectId();
-                final Intent i = new Intent(NewGameActivity.this, GameItemsActivity.class);
-                i.putExtra("GameId", GameId);
-                NewGameActivity.this.startActivity(i);
+            	Log.d("Game Creation", "Game Name/Times Created!");
+            	final String GameId = game.getObjectId();
+            	final Intent i = new Intent(NewGameActivity.this, GameItemsActivity.class);
+            	i.putExtra("GameId", GameId);
+            	NewGameActivity.this.startActivity(i);
             } else {
-                Log.d("Game Creation", "Error creating game: " + e);
+            	Log.d("Game Creation", "Error creating game: " + e);
             }
-       };
-      });
+         };
+       });
   }
 
   private Date getDateTime(int date, int time) {	

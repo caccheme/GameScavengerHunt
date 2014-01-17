@@ -35,34 +35,34 @@ public class GameItemsActivity extends Activity {
 
   private void listCurrentItems(){
    final ParseQuery<ParseObject> query = ParseQuery.getQuery("Game");
-    final Intent i = getIntent(); 
-    final Context context = this;
-    query.getInBackground(i.getStringExtra("GameId"), new GetCallback<ParseObject>() {
-      @Override
-      public void done(ParseObject game, ParseException e) {
-        if (e == null) {
-          JSONArray items = game.getJSONArray("itemsList");
-          if (items != null) {        
-            final List<String> itemsList = new ArrayList<String>();
-            for(int i = 0; i < items.length(); i++){
-              try{             
-                itemsList.add(items.getString(i));
-              }
-              catch (Exception exc) {
-                Log.d("ScavengerHuntApp", "JSONObject exception: " + Log.getStackTraceString(exc));
-              }
-            }
-            setupItemListView(itemsList);
-          }
-        }
-        else {
-          showToast(context);
-          startActivity(getIntent());
-          finish();
-        }
-      }
-    });  
-  }
+   final Intent i = getIntent();
+   final Context context = this;
+   query.getInBackground(i.getStringExtra("GameId"), new GetCallback<ParseObject>() {
+	   @Override
+	   public void done(ParseObject game, ParseException e) {
+		   if (e == null) {
+			   JSONArray items = game.getJSONArray("itemsList");
+			   if (items != null) {
+				   final List<String> itemsList = new ArrayList<String>();
+				   for(int i = 0; i < items.length(); i++){
+					   try{
+						   itemsList.add(items.getString(i));
+						   }
+					   catch (Exception exc) {
+						   Log.d("ScavengerHuntApp", "JSONObject exception: " + Log.getStackTraceString(exc));
+						   }
+					   }
+				   setupItemListView(itemsList);
+				   }
+			   }
+		   else {
+			   showToast(context);
+			   startActivity(getIntent());
+			   finish();
+			   }
+		   }
+	   });
+   }
   
   private void showToast(Context context) {
 	    CharSequence text = "There was a problem with this action.";
@@ -139,7 +139,7 @@ public class GameItemsActivity extends Activity {
   private void addItemsToArray(JSONArray items, ParseObject game){
       final String new_item = getUserInput(R.id.enterText); 
 	  items.put(new_item); 
-      game.put("itemsList", items);   
+      game.put("itemsList", items == null ? null : items);   
       game.saveInBackground();
       startActivity(getIntent());
       finish();
