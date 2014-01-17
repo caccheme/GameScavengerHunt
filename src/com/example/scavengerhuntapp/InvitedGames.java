@@ -1,10 +1,12 @@
 package com.example.scavengerhuntapp;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import android.app.Activity;
-import android.app.DialogFragment;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -26,6 +29,7 @@ public class InvitedGames extends Activity {
     ParseUser currentUser = ParseUser.getCurrentUser();
     List<ParseObject> currentGames = new ArrayList<ParseObject>();
     List<ParseObject> gameIdsList = new ArrayList<ParseObject>();
+    final Context context = this;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,13 +38,6 @@ public class InvitedGames extends Activity {
         setCurrentGamesListView();
         setupButtonCallbacks();
     }
-
-// @Override
-// public boolean onCreateOptionsMenu(Menu menu) {
-// // Inflate the menu; this adds items to the action bar if it is present.
-// getMenuInflater().inflate(R.menu.mygameslist_menu, menu);
-// return true;
-// }
 
     private void setCurrentGamesListView() {
         final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
@@ -67,6 +64,7 @@ public class InvitedGames extends Activity {
     }
 
     private void findCurrentInvitedGames() {
+      
       final ParseQuery<ParseObject> fquery = ParseQuery.getQuery("GamePlayer");
       fquery.whereEqualTo("user", currentUser);
       fquery.findInBackground(new FindCallback<ParseObject>() {
@@ -77,20 +75,31 @@ public class InvitedGames extends Activity {
 				      squery.findInBackground(new FindCallback<ParseObject>() {
 				          public void done(List<ParseObject> games, ParseException e) {
 				              if (e == null) {
-				                  for (ParseObject game : games) {
-				                	  if (games != null){
-				                      Log.d("Parse GameName",
-				                              "Retrieved Game Named: " + game.getString("name"));
-				                    	  currentGames.add(game);
-				                    	  addToListView(game, getCurrentGamesAdapter());
-				                	  }
-				                	  if (games == null){
-				                		  Log.d("Parse GameName",
-					                              "Has been invited to no games");
-				                		  launchNoInvitedGamesDialogFragment();
-				                	
-				                	  }
+				            	  if (games.isEmpty()) {
+				                      Toast.makeText(context, "You have not been invited to any games yet."
+				                    		  , Toast.LENGTH_LONG).show();
+				                      InvitedGames.this.startActivity(new Intent(InvitedGames.this, MainMenuActivity.class));
+				                      finish();
 				                  }
+				                  for (final ParseObject game : games) {
+		                            Log.d("ScavengerHuntApp", "Game record retrieved: " + game.getString("name"));
+		                            checkGameStatus(game); 
+				                  }		            	  
+//		                  for (ParseObject game : games) {
+//		                	  if (games != null){
+//		                      Log.d("Parse GameName",
+//		                              "Retrieved Game Named: " + game.getString("name"));
+//		                    	  currentGames.add(game);
+//		                    	  addToListView(game, getCurrentGamesAdapter());
+//		                	  }
+//		                	  if (games == null){
+//		                		  Log.d("Parse GameName",
+//			                              "Has been invited to no games");
+//		                		  launchNoInvitedGamesDialogFragment();
+//		                	
+//		                	  }
+//		                  }
+				                  
 				              } else {
 				                  Log.w("Parse Error", "game name retreival failure");
 				              }
@@ -99,15 +108,59 @@ public class InvitedGames extends Activity {
               }           
       });
     }
-
-    private void launchNoInvitedGamesDialogFragment() {
-    	final DialogFragment noInvitedGamesDialogFragment = new NoInvitedGamesDialogFragment();
-          noInvitedGamesDialogFragment.show(getFragmentManager(), "No Invited Games");
+    
+    private void checkGameStatus(ParseObject game) {
+    	final SimpleDateFormat sdf_datetime = new SimpleDateFormat("MMM d, yyyy 'at' h:mm a");
+        final String start_datetime = sdf_datetime.format(game.getDate("start_datetime"));
+        final Date today = new Date();
+        final String errortext  = "Sorry, there was a problem";
+        
+         try {   	 
+           switch (game.getDate("end_datetime").compareTo(today)){
+             case -1: //game ended already (before today)
+            	 String message1 = " (Expired) ";
+            	 addToListView(game, getCurrentGamesAdapter(), message1);
+             break;
+             case 0: //game ends today
+            	 String message2 = " (Current) " ;
+            	 addToListView(game, getCurrentGamesAdapter(), message2);
+             break;
+             case 1: //game ends after today
+               switch (game.getDate("start_datetime").compareTo(today)) {
+                 case -1: case 0: //game start date was before today or equal to today
+                	 String message3 = " (Current)";
+                	 addToListView(game, getCurrentGamesAdapter(), message3);
+                 break;
+                 case 1: //game starts after today
+                	 String message4 = " (Pending)- \n opens " + start_datetime;
+                	 addToListView(game, getCurrentGamesAdapter(), message4);
+                 break;
+                 default:        
+                  Toast.makeText(context, 
+                		   errortext, Toast.LENGTH_SHORT).show();
+                   finish();
+                   startActivity(getIntent());
+               }
+             break;
+             default:
+               Toast.makeText(context, 
+            		   errortext, Toast.LENGTH_SHORT).show();
+               finish();
+               startActivity(getIntent());
+           }
+         }
+         
+         catch (final NullPointerException null_exc) {
+           Toast.makeText(context, errortext, Toast.LENGTH_SHORT).show();
+           finish();
+           startActivity(getIntent());
+         }
     }
     
-    private void addToListView(ParseObject game, ArrayAdapter<String> adapter) {
-        adapter.add(game.getString("name"));
+    private void addToListView(ParseObject game, ArrayAdapter<String> adapter, String message) {
+        adapter.add(game.getString("name") + message);
         adapter.notifyDataSetChanged();
+        currentGames.add(game);
     }
     
     private ArrayAdapter<String> getCurrentGamesAdapter() {

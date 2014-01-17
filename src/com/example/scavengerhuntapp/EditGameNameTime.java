@@ -150,7 +150,7 @@ public class EditGameNameTime extends Activity {
 
     private static Date convertToDateTime(String dateString) {
         final SimpleDateFormat dateFormat = new SimpleDateFormat(
-                "MM-dd-yyyy h:mm a", Locale.US);
+        		"MMM d, yyyy 'at' h:mm a", Locale.US);
         Date convertedDate = new Date();
         try {
             convertedDate = dateFormat.parse(dateString);

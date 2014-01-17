@@ -1,5 +1,6 @@
 package com.example.scavengerhuntapp;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -72,7 +73,8 @@ public class PlayGame extends Activity {
                     final TextView gameName = (TextView) findViewById(R.id.title_gameName);
                     final TextView endDatetime = (TextView) findViewById(R.id.text_endDatetime);
                     gameName.setText(game.getString("name"));
-                    endDatetime.setText(game.getDate("end_datetime").toString());
+                    final SimpleDateFormat sdf_datetime = new SimpleDateFormat("MMM d, yyyy 'at' h:mm a");
+                    endDatetime.setText(sdf_datetime.format(game.getDate("end_datetime")));
                     
                     initializeItemListView();
 
